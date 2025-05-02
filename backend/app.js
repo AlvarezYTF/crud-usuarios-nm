@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
-app.use('/api/users', userRoutes);
+app.use('/crud_aprendices', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

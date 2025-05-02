@@ -1,13 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const upload = require("../middlewares/upload");
-const aprendicesController = require("../controllers/aprendicesController");
+const userController = require("../controllers/userController");
 
-// Ruta de prueba temporal
-router.get('/', (req, res) => {
-  res.send('');
-});
-
-router.put("/aprendices/:id", upload.single("imagen"), aprendicesController.update);
+router.get('/:id', userController.getOne); // ruta para traer un usuario individual
+router.get('/', userController.getAll); // ruta para traer todos los usuarios
 
 module.exports = router;
