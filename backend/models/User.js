@@ -70,6 +70,22 @@ const UserSchema = new mongoose.Schema({
   timestamps: true // Habilita automáticamente los campos createdAt y updatedAt (reemplaza fechaCreacion y fechaActualizacion manuales)
 });
 
+userEsquema.pre('save' , function (next) {
+  this.nombre = this.nombre.toUpperCase();
+  this.ciudad = this.ciudad.toUpperCase();
+  this.pais = this.pais.toUpperCase();
+  this.direccion = this.direccion.toUpperCase();
+  next();
+});
+
+userEsquema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update.nombre) update.nombre = update.nombre.toUpperCase();
+  if (update.ciudad) update.ciudad = update.ciudad.toUpperCase();
+  if (update.pais) update.pais = update.pais.toUpperCase();
+  if (update.direccion) update.direccion = update.direccion.toUpperCase();
+});
+
 // Middleware para encriptar la contraseña antes de guardar
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('contrasena')) {

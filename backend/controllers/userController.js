@@ -28,9 +28,20 @@ exports.updateUser = async (req, res) => {
     }
   };
 
-exports.deleteUser = async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Usuario eliminado' });
+exports.eliminarUsuario = async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        const usuarioEliminado = await User.findByIdAndDelete(id);
+
+        if (!usuarioEliminado) {
+            return res.status(404).json({error : 'Usuario no encontrado'});
+        }
+
+        res.status(200).json({message: 'Usuario eliminado correctamente'});
+    } catch (error) {
+        res.status(500).json({error: 'Error al eliminar el usuario'});
+    }
 };
 
 exports.updatePassword = async (req, res) => {
@@ -57,4 +68,4 @@ exports.updatePassword = async (req, res) => {
       console.error('Error al actualizar contraseña:', error);
       res.status(500).json({ message: 'Error interno del servidor' });
     }
-  };  
+  };
