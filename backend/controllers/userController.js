@@ -1,58 +1,5 @@
 const User = require('../models/User');
-
-const updateUser = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        $set: req.body
-      },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error('Error actualizando usuario:', error);
-    res.status(500).json({ message: 'Error del servidor' });
-  }
-};
-
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
-
-const updatePassword = async (req, res) => {
-  const { id } = req.params;
-  const { password } = req.body;
-
-  if (!password) {
-    return res.status(400).json({ message: 'La contraseña es obligatoria' });
-  }
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      $set: { password: hashedPassword }
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-    res.json({ message: 'Contraseña actualizada correctamente' });
-  } catch (error) {
-    console.error('Error actualizando contraseña:', error);
-    res.status(500).json({ message: 'Error al actualizar contraseña' });
-  }
-};
-
-module.exports = { updateUser };
-const User = require('../models/User');
 
 exports.getUsers = async (req, res) => {
   const users = await User.find();
@@ -66,11 +13,48 @@ exports.createUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(user);
-};
+    const { id } = req.params;
+  
+    try {
+      const updatedUser = await User.findByIdAndUpdate(id,{$set: req.body},{ new: true });
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Error actualizando usuario:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    }
+  };
 
 exports.deleteUser = async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.json({ message: 'Usuario eliminado' });
 };
+
+exports.updatePassword = async (req, res) => {
+    const { id } = req.params;
+    const { contrasenaActual, nuevaContrasena } = req.body;
+  
+    if (!contrasenaActual || !nuevaContrasena) {
+      return res.status(400).json({ message: 'Debes enviar la contraseña actual y la nueva' });
+    }
+  
+    try {
+      const user = await User.findById(id).select('+contrasena'); // ← Aquí el cambio
+  
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+  
+      const match = await bcrypt.compare(contrasenaActual, user.contrasena);
+      if (!match) return res.status(401).json({ message: 'La contraseña actual es incorrecta' });
+  
+      user.contrasena = nuevaContrasena; // ← se vuelve a hashear automáticamente por el middleware .pre('save')
+      await user.save();
+  
+      res.json({ message: 'Contraseña actualizada correctamente' });
+    } catch (error) {
+      console.error('Error al actualizar contraseña:', error);
+      res.status(500).json({ message: 'Error interno del servidor' });
+    }
+  };  

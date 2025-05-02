@@ -65,15 +65,6 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     comment: 'Indica si el usuario está activo (true) o inactivo (false)'
-  },
-  fechaCreacion: {
-    type: Date,
-    default: Date.now,
-    immutable: true // Evita que este campo se modifique después de la creación
-  },
-  fechaActualizacion: {
-    type: Date,
-    default: Date.now
   }
 }, {
   timestamps: true // Habilita automáticamente los campos createdAt y updatedAt (reemplaza fechaCreacion y fechaActualizacion manuales)
