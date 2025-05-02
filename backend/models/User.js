@@ -70,7 +70,8 @@ const UserSchema = new mongoose.Schema({
   timestamps: true // Habilita automáticamente los campos createdAt y updatedAt (reemplaza fechaCreacion y fechaActualizacion manuales)
 });
 
-userEsquema.pre('save' , function (next) {
+// Middleware para convertir campos a mayúsculas al guardar
+UserSchema.pre('save', function (next) {
   this.nombre = this.nombre.toUpperCase();
   this.ciudad = this.ciudad.toUpperCase();
   this.pais = this.pais.toUpperCase();
@@ -78,13 +79,17 @@ userEsquema.pre('save' , function (next) {
   next();
 });
 
-userEsquema.pre('findOneAndUpdate', function (next) {
+// Middleware para convertir campos a mayúsculas al actualizar
+UserSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate();
-  if (update.nombre) update.nombre = update.nombre.toUpperCase();
-  if (update.ciudad) update.ciudad = update.ciudad.toUpperCase();
-  if (update.pais) update.pais = update.pais.toUpperCase();
-  if (update.direccion) update.direccion = update.direccion.toUpperCase();
+  if (update.nombre) this.set('nombre', update.nombre.toUpperCase());
+  if (update.ciudad) this.set('ciudad', update.ciudad.toUpperCase());
+  if (update.pais) this.set('pais', update.pais.toUpperCase());
+  if (update.direccion) this.set('direccion', update.direccion.toUpperCase());
+  next();
 });
+
+
 
 // Middleware para encriptar la contraseña antes de guardar
 UserSchema.pre('save', async function(next) {
@@ -100,11 +105,6 @@ UserSchema.pre('save', async function(next) {
     next(error);
   }
 });
-
-// Método para comparar la contraseña ingresada con la contraseña encriptada
-UserSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.contrasena);
-};
 
 const User = mongoose.model('User', UserSchema);
 
