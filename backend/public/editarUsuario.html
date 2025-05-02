@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Usuario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <div class="bg-white rounded-4 shadow p-4 mx-auto" style="max-width: 700px;">
+      <h4 class="text-center mb-4 fw-bold">Actualizar información</h4>
+
+      <form id="formulario">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Tipo de documento:</label>
+            <select id="tipoDocumento" class="form-select">
+              <option disabled selected>Tipo de documento</option>
+              <option>Cédula</option>
+              <option>Tarjeta de Identidad</option>
+              <option>Pasaporte</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Número de documento:</label>
+            <input type="text" id="numeroDocumento" class="form-control" placeholder="Número de documento...">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Primer Nombre:</label>
+            <input type="text" id="primerNombre" class="form-control" placeholder="Primer nombre...">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Segundo Nombre:</label>
+            <input type="text" id="segundoNombre" class="form-control" placeholder="Segundo nombre...">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Primer Apellido:</label>
+            <input type="text" id="primerApellido" class="form-control" placeholder="Primer apellido...">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Segundo Apellido:</label>
+            <input type="text" id="segundoApellido" class="form-control" placeholder="Segundo apellido...">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Teléfono:</label>
+            <input type="text" id="telefono" class="form-control" placeholder="Teléfono...">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Dirección:</label>
+            <input type="text" id="direccion" class="form-control" placeholder="Dirección...">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Fecha de nacimiento:</label>
+            <input type="date" id="fechaNacimiento" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nacionalidad:</label>
+            <input type="text" id="nacionalidad" class="form-control" placeholder="Nacionalidad...">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Lugar de nacimiento:</label>
+            <input type="text" id="lugarNacimiento" class="form-control" placeholder="Lugar de nacimiento...">
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-danger px-4">Cancelar</button>
+            <button type="submit" class="btn btn-dark px-4">Actualizar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('formulario');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('userId').value;
+      const datos = {
+        tipoDocumento: document.getElementById('tipoDocumento').value,
+        numeroDocumento: document.getElementById('numeroDocumento').value,
+        primerNombre: document.getElementById('primerNombre').value,
+        segundoNombre: document.getElementById('segundoNombre').value,
+        primerApellido: document.getElementById('primerApellido').value,
+        segundoApellido: document.getElementById('segundoApellido').value,
+        telefono: document.getElementById('telefono').value,
+        direccion: document.getElementById('direccion').value,
+        fechaNacimiento: document.getElementById('fechaNacimiento').value,
+        nacionalidad: document.getElementById('nacionalidad').value,
+        lugarNacimiento: document.getElementById('lugarNacimiento').value,
+      };
+
+      try {
+        const respuesta = await fetch(`http://localhost:3000/api/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        });
+
+        const resultado = await respuesta.json();
+        if (respuesta.ok) {
+          alert(' Usuario actualizado correctamente');
+          console.log(resultado);
+        } else {
+          alert(' Error: ' + resultado.message);
+        }
+      } catch (error) {
+        console.error(error);
+        alert(' Error al enviar la solicitud');
+      }
+    });
+  </script>
+
+</body>
+</html>
