@@ -7,5 +7,6 @@ router.get('/', (req, res) => {
 });
 
 router.put('/users/:id', updateUser);
+router.put('/users/:id/password', updatePassword);
 
 module.exports = router;
