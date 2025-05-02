@@ -34,23 +34,29 @@ Desarrollar una aplicación web tipo CRUD (Crear, Leer, Actualizar, Eliminar) pa
 ### Backend
 
 backend/
-├── app.js
-├── config/db.js
-├── models/User.js
-├── controllers/userController.js
-├── routes/userRoutes.js
-├── uploads/
-└── .env
+├── app.js                  # Archivo principal de la app Express
+├── config/
+│   └── db.js               # Configuración de conexión a MongoDB
+├── models/
+│   └── User.js             # Esquema Mongoose para usuarios
+├── controllers/
+│   └── userController.js   # Lógica de negocio: CRUD, validaciones
+├── routes/
+│   └── userRoutes.js       # Definición de rutas HTTP para usuarios
+├── uploads/                # Carpeta donde se guardan imágenes de perfil
+└── .env                    # Variables de entorno (puerto, URI Mongo, etc.)
 
 
 ### Frontend
 
 frontend/
+├── public/
+│   └── index.html          # Plantilla HTML principal
 ├── src/
-│ ├── components/
-│ │ ├── UserList.vue
-│ │ └── UserForm.vue
-│ ├── App.vue
-│ ├── main.js
-│ └── services/axios.js
-└── public/index.html
+│   ├── main.js             # Punto de entrada de la app Vue
+│   ├── App.vue             # Componente raíz
+│   ├── services/
+│   │   └── axios.js        # Configuración global de Axios
+│   └── components/
+│       ├── UserList.vue    # Muestra lista de usuarios y botones
+│       └── UserForm.vue    # Formulario para crear/editar usuarios
