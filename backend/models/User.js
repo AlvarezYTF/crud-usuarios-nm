@@ -122,22 +122,6 @@ UserSchema.pre('save', async function(next) {
   }
 });
 
-UserSchema.statics.getAll = async function() {
-    return await this.find();
-  };
-  
-  UserSchema.statics.getOne = async function(id) {
-    return await this.findById(id);
-  };
-
-UserSchema.statics.getAll = async function() {
-    return await this.find();
-  };
-  
-  UserSchema.statics.getOne = async function(id) {
-    return await this.findById(id);
-  };
-
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

@@ -11,6 +11,7 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.getUserId = async (req, res) => {
+  console.log('ID recibido:', req.params.id);
   const { id } = req.params;
 
   try {
@@ -26,8 +27,6 @@ exports.getUserId = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    console.log('Datos recibidos en req.body:', req.body);
-    console.log('Archivo recibido:', req.file);
     const data = req.body;
 
     // Si se envió una imagen, guardar el nombre del archivo
