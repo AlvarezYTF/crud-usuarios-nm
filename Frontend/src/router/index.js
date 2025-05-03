@@ -1,18 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ListaUsuarios from '@/components/ListaUsuarios.vue';
-import FormularioUsuario from '@/components/FormularioUsuario.vue';
+import LoginForm from '@/components/LoginForm.vue';
 
 const routes = [
   {
+    path: '/login',
+    name: 'login',
+    component: LoginForm,
+  },
+  {
     path: '/',
-    name: 'ListaUsuarios',
-    component: ListaUsuarios
-  }
+    redirect: '/login', // Redirige la raíz (/) a /login
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 export default router;
