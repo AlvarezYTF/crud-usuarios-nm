@@ -1,8 +1,7 @@
-<!-- filepath: c:\Users\USUARIO DELL\Downloads\usuarios-nm\Frontend\src\components\LoginForm.vue -->
 <template>
   <div class="login-container">
     <h2>Iniciar sesión</h2>
-    <form @submit.prevent="handleLogin">
+    <form id="loginForm" @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="email">Email</label>
         <input
@@ -27,34 +26,76 @@
 </template>
 
 <script>
-import authService from "../services/userService";
+import JustValidate from 'just-validate';
+import Swal from 'sweetalert2';
+import authService from '../services/userService';
+import { nextTick } from 'vue';
 
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       isSubmitting: false,
+      validador: null,
     };
   },
   methods: {
     async handleLogin() {
+      const valid = await this.validador.validate();
+      if (!valid) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Formulario inválido',
+          text: 'Por favor completa correctamente los campos',
+          confirmButtonColor: '#2c3e50',
+        });
+        return;
+      }
+
       this.isSubmitting = true;
       try {
         const response = await authService.login(this.email, this.password);
-        alert("Inicio de sesión exitoso");
+        Swal.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          text: 'Bienvenido al sistema',
+          confirmButtonColor: '#2c3e50',
+        });
         console.log(response);
+        // Redirige si lo necesitas, por ejemplo:
+        // this.$router.push('/usuarios');
       } catch (error) {
-        alert("Error al iniciar sesión: " + error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de inicio de sesión',
+          text: error.response?.data?.message || error.message,
+          confirmButtonColor: '#d33',
+        });
       } finally {
         this.isSubmitting = false;
       }
     },
   },
+  mounted() {
+    nextTick(() => {
+      this.validador = new JustValidate('#loginForm');
+      this.validador
+        .addField('#email', [
+          { rule: 'required', errorMessage: 'El correo es obligatorio' },
+          { rule: 'email', errorMessage: 'Correo inválido' },
+        ])
+        .addField('#password', [
+          { rule: 'required', errorMessage: 'La contraseña es obligatoria' },
+          { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' },
+        ]);
+    });
+  },
 };
 </script>
 
 <style scoped>
+/* tus estilos siguen intactos */
 .login-container {
   max-width: 400px;
   margin: 50px auto;
