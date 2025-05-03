@@ -23,7 +23,7 @@ export default {
   name: 'UserImage',
   data() {
     return {
-      userImage: require('@/assets/232ef85c-4054-476c-af02-7242e1e3aa27.png'),
+      userImage: require('@/assets/logo.png'),
       showModal: false,
     };
   },
