@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { login } = require('../controllers/loginController');
 
 // Definición del esquema para el modelo User
 const UserSchema = new mongoose.Schema({
@@ -65,7 +66,28 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     comment: 'Indica si el usuario está activo (true) o inactivo (false)'
-  }
+  },
+  correo: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\S+@\S+\.\S+$/, 'Por favor ingresa un email válido'],
+  },
+  contrasena: {
+    type: String, 
+    required: true,
+    minlength: 8,
+    select: false, // No se mostrará por defecto al consultar el usuario
+  },
+  LoginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  lockUntil: {
+    type: Date,
+  },
 }, {
   timestamps: true // Habilita automáticamente los campos createdAt y updatedAt (reemplaza fechaCreacion y fechaActualizacion manuales)
 });
@@ -93,3 +115,4 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;
+
