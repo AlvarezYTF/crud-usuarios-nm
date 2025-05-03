@@ -24,9 +24,4 @@ router.put('/users/:id/password', userController.updatePassword);
 
 router.post('/login', loginController.login);
 
-router.get('/prueba', (req, res) => {
-  res.send('Ruta funcionando ✅');
-});
-
-
 module.exports = router;

@@ -1,12 +1,20 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/users';
+const BASE_URL = 'http://localhost:3000/api';
 
 export default {
   obtenerUsuarios() {
-    return axios.get(API_URL);
+    return axios.get(`${BASE_URL}/users`);
   },
+
   registrarUsuario(usuario) {
-    return axios.post(API_URL, usuario);
+    return axios.post(`${BASE_URL}/users`, usuario);
+  },
+
+  login(email, password) {
+    return axios.post(`${BASE_URL}/login`, {
+      correo: email,
+      contrasena: password
+    });
   }
 };
