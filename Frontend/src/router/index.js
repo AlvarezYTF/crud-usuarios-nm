@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import RegistrarUsuario from '../components/RegistrarUsuario.vue'
 import LoginForm from '@/components/LoginForm.vue';
+import mostrarUsuarios from '../components/MostrarUsuarios.vue'
 
 const routes = [
   {
@@ -17,7 +18,12 @@ const routes = [
     path: '/usuarios/:id',
     name: 'VerUsuario',
     component: () => import('@/components/VerUsuario.vue')
-  }
+  },
+  {
+    path: '/usuarios',
+    name: 'MostrarUsuarios',
+    component: mostrarUsuarios
+  } 
 ]
 
 const router = createRouter({
