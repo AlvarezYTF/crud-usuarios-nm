@@ -83,4 +83,17 @@ exports.updatePassword = async (req, res) => {
     console.error('Error al actualizar contraseña:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
+  
+  exports.getUserById = async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+      res.json(user);
+    } catch (error) {
+      console.error('Error al obtener usuario por ID:', error);
+      res.status(500).json({ message: 'Error al obtener el usuario' });
+    }
+  };  
 };

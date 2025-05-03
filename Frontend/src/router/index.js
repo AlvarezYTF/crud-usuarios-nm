@@ -6,6 +6,11 @@ const routes = [
     path: '/',
     name: 'RegistrarUsuario',
     component: RegistrarUsuario
+  },
+  {
+    path: '/usuarios/:id',
+    name: 'VerUsuario',
+    component: () => import('@/components/VerUsuario.vue')
   }
 ]
 
