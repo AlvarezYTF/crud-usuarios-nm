@@ -19,4 +19,19 @@ nav {
 h1 {
   margin: 0;
 }
+
+.nav-links {
+  margin-top: 0.5rem;
+}
+
+.nav-links a {
+  margin: 0 1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-links a.router-link-exact-active {
+  text-decoration: underline;
+}
 </style>
