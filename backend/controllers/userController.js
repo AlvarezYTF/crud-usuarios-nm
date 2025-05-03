@@ -2,14 +2,31 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
 exports.getUsers = async (req, res) => {
-  const users = await User.find();
-  res.json(users);
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener usuarios', error });
+  }
+};
+
+exports.getUserId = async (req, res) => {
+  console.log('ID recibido:', req.params.id);
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el usuario', error });
+  }
 };
 
 exports.createUser = async (req, res) => {
   try {
-    console.log('Datos recibidos en req.body:', req.body);
-    console.log('Archivo recibido:', req.file);
     const data = req.body;
 
     // Si se envió una imagen, guardar el nombre del archivo

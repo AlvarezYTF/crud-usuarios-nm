@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { login } = require('../controllers/loginController');
 
 // Definición del esquema para el modelo User
 const UserSchema = new mongoose.Schema({
@@ -8,16 +9,14 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'El primer nombre es obligatorio.']
   },
   segundoNombre: {
-    type: String,
-    required: [true, 'El segundo nombre es obligatorio.']
+    type: String
   },
   primerApellido: {
     type: String,
     required: [true, 'El primer apellido es obligatorio.']
   },
   segundoApellido: {
-    type: String,
-    required: [true, 'El segundo apellido es obligatorio.']
+    type: String
   },
   correo: {
     type: String,
@@ -73,11 +72,33 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'La fecha de nacimiento es obligatoria.']
   },
+  
   estado: {
     type: Boolean,
-    required: [true, 'El estado es obligatorio.'],
-    comment: 'Indica si el usuario está activo (true) o inactivo (false)'
-  }
+    default: true
+  },
+  
+  correo: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\S+@\S+\.\S+$/, 'Por favor ingresa un email válido'],
+  },
+  contrasena: {
+    type: String, 
+    required: true,
+    minlength: 8,
+    select: false, // No se mostrará por defecto al consultar el usuario
+  },
+  LoginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  lockUntil: {
+    type: Date,
+  },
 }, {
   timestamps: true
 });
@@ -125,3 +146,4 @@ UserSchema.pre('save', async function(next) {
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;
+
