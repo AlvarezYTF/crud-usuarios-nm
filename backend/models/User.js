@@ -9,16 +9,14 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'El primer nombre es obligatorio.']
   },
   segundoNombre: {
-    type: String,
-    required: [true, 'El segundo nombre es obligatorio.']
+    type: String
   },
   primerApellido: {
     type: String,
     required: [true, 'El primer apellido es obligatorio.']
   },
   segundoApellido: {
-    type: String,
-    required: [true, 'El segundo apellido es obligatorio.']
+    type: String
   },
   correo: {
     type: String,
@@ -74,11 +72,12 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'La fecha de nacimiento es obligatoria.']
   },
+  
   estado: {
     type: Boolean,
-    required: [true, 'El estado es obligatorio.'],
-    comment: 'Indica si el usuario está activo (true) o inactivo (false)'
+    default: true
   },
+  
   correo: {
     type: String,
     required: true,
