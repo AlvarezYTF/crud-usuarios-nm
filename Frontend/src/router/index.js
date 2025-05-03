@@ -1,18 +1,17 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import ListaUsuarios from '@/components/ListaUsuarios.vue';
-import FormularioUsuario from '@/components/FormularioUsuario.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import RegistrarUsuario from '../components/RegistrarUsuario.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'ListaUsuarios',
-    component: ListaUsuarios
+    name: 'RegistrarUsuario',
+    component: RegistrarUsuario
   }
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-});
+})
 
-export default router;
+export default router

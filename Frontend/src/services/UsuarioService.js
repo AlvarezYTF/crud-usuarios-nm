@@ -1,9 +1,0 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api/';
-
-export default {
-  obtenerUsuarios() {
-    return axios.get(API_URL);
-  }
-};

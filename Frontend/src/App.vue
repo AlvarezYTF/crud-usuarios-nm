@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <nav>
-      <h1>Gestión de Usuarios</h1>
-    </nav>
     <router-view></router-view>
   </div>
 </template>

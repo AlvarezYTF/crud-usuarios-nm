@@ -3,9 +3,21 @@ const bcrypt = require('bcrypt');
 
 // Definición del esquema para el modelo User
 const UserSchema = new mongoose.Schema({
-  nombre: {
+  primerNombre: {
     type: String,
-    required: [true, 'El nombre es obligatorio.']
+    required: [true, 'El primer nombre es obligatorio.']
+  },
+  segundoNombre: {
+    type: String,
+    required: [true, 'El segundo nombre es obligatorio.']
+  },
+  primerApellido: {
+    type: String,
+    required: [true, 'El primer apellido es obligatorio.']
+  },
+  segundoApellido: {
+    type: String,
+    required: [true, 'El segundo apellido es obligatorio.']
   },
   correo: {
     type: String,
@@ -13,34 +25,34 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    match: [/.+@.+\..+/, 'Por favor, introduce un correo electrónico válido.'] // Valida el formato del correo
+    match: [/.+@.+\..+/, 'Por favor, introduce un correo electrónico válido.']
   },
   contrasena: {
     type: String,
     required: [true, 'La contraseña es obligatoria.'],
     minlength: [6, 'La contraseña debe tener al menos 6 caracteres.'],
-    select: false // Indica que este campo no se incluirá por defecto en las consultas
+    select: false
   },
   imagen: {
     type: String,
-    default: null
+    required: [true, 'La imagen es obligatoria.']
   },
   telefono: {
     type: String,
-    default: null,
-    match: [/^\d{7,15}$/, 'Por favor, introduce un número de teléfono válido.'] // Valida el formato del teléfono (7 a 15 dígitos)
+    required: [true, 'El teléfono es obligatorio.'],
+    match: [/^\d{7,15}$/, 'Por favor, introduce un número de teléfono válido.']
   },
   direccion: {
     type: String,
-    default: null
+    required: [true, 'La dirección es obligatoria.']
   },
   ciudad: {
     type: String,
-    default: null
+    required: [true, 'La ciudad es obligatoria.']
   },
   pais: {
     type: String,
-    default: null
+    required: [true, 'El país es obligatorio.']
   },
   tipoDocumento: {
     type: String,
@@ -59,20 +71,23 @@ const UserSchema = new mongoose.Schema({
   },
   fechaNacimiento: {
     type: Date,
-    default: null
+    required: [true, 'La fecha de nacimiento es obligatoria.']
   },
   estado: {
     type: Boolean,
-    default: true,
+    required: [true, 'El estado es obligatorio.'],
     comment: 'Indica si el usuario está activo (true) o inactivo (false)'
   }
 }, {
-  timestamps: true // Habilita automáticamente los campos createdAt y updatedAt (reemplaza fechaCreacion y fechaActualizacion manuales)
+  timestamps: true
 });
 
 // Middleware para convertir campos a mayúsculas al guardar
 UserSchema.pre('save', function (next) {
-  this.nombre = this.nombre.toUpperCase();
+  this.primerNombre = this.primerNombre.toUpperCase();
+  this.segundoNombre = this.segundoNombre.toUpperCase();
+  this.primerApellido = this.primerApellido.toUpperCase();
+  this.segundoApellido = this.segundoApellido.toUpperCase();  
   this.ciudad = this.ciudad.toUpperCase();
   this.pais = this.pais.toUpperCase();
   this.direccion = this.direccion.toUpperCase();
@@ -82,14 +97,15 @@ UserSchema.pre('save', function (next) {
 // Middleware para convertir campos a mayúsculas al actualizar
 UserSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate();
-  if (update.nombre) this.set('nombre', update.nombre.toUpperCase());
+  if (update.primerNombre) this.set('primerNombre', update.primerNombre.toUpperCase());
+  if (update.segundoNombre) this.set('segundoNombre', update.segundoNombre.toUpperCase());
+  if (update.primerApellido) this.set('primerApellido', update.primerApellido.toUpperCase());
+  if (update.segundoApellido) this.set('segundoApellido', update.segundoApellido.toUpperCase());
   if (update.ciudad) this.set('ciudad', update.ciudad.toUpperCase());
   if (update.pais) this.set('pais', update.pais.toUpperCase());
   if (update.direccion) this.set('direccion', update.direccion.toUpperCase());
   next();
 });
-
-
 
 // Middleware para encriptar la contraseña antes de guardar
 UserSchema.pre('save', async function(next) {
