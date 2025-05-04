@@ -16,5 +16,13 @@ export default {
       correo: email,
       contrasena: password
     });
+  },
+
+  perfilUsuario() {
+    return axios.get(`${BASE_URL}/perfil`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   }
 };

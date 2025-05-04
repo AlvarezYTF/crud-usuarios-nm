@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import RegistrarUsuario from '../components/RegistrarUsuario.vue'
 import LoginForm from '@/components/LoginForm.vue';
-import ImagenUsuarios from '@/components/ImagenUsuarios.vue';
+import PerfilUsuario from '@/components/Perfil.vue';
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: LoginForm,
   },
@@ -15,9 +15,9 @@ const routes = [
     component: RegistrarUsuario
   },
   {
-    path: '/usuarios/:id',
-    name: 'VerUsuario',
-    component: () => import('@/components/VerUsuario.vue')
+    path: '/perfil',
+    name: 'PerfilUsuario',
+    component: PerfilUsuario
   }
 ]
 

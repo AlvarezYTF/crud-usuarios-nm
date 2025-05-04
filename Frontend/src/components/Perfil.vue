@@ -1,9 +1,21 @@
 <template>
   <div class="container mt-5 d-flex justify-content-center">
-    <div class="card p-4" style="width: 100%; max-width: 800px;">
+    <div class="card p-4 text-center" v-if="usuario" style="width: 100%; max-width: 800px;">
       <h3 class="fw-bold mb-4">Detalles del usuario</h3>
+      
+      <!-- Imagen en cabecera -->
+      <div class="mb-3">
+        <img 
+          v-if="usuario.imagen"
+          :src="usuario.imagen ? `http://localhost:3000/uploads/${usuario.imagen}` : imagenPorDefecto"
+          class="rounded-circle shadow"
+          alt="Imagen de perfil"
+          style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #2c3e50;"
+        />
+      </div>
 
-      <div class="row g-3 mb-3">
+
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Tipo de documento</label>
           <input type="text" class="form-control" :value="usuario.tipoDocumento" disabled />
@@ -14,7 +26,7 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Primer nombre</label>
           <input type="text" class="form-control" :value="usuario.primerNombre" disabled />
@@ -25,7 +37,7 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Primer apellido</label>
           <input type="text" class="form-control" :value="usuario.primerApellido" disabled />
@@ -36,7 +48,7 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Teléfono</label>
           <input type="text" class="form-control" :value="usuario.telefono" disabled />
@@ -47,7 +59,7 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Fecha de nacimiento</label>
           <input type="text" class="form-control" :value="formatFecha(usuario.fechaNacimiento)" disabled />
@@ -58,7 +70,7 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-3 text-start">
         <div class="col">
           <label class="form-label">Nacionalidad</label>
           <input type="text" class="form-control" :value="usuario.pais" disabled />
@@ -69,44 +81,51 @@
         </div>
       </div>
 
-      <div class="mb-3 text-center" v-if="usuario.imagen">
-        <label class="form-label">Imagen de perfil</label>
-        <div>
-          <img :src="`http://localhost:3000/uploads/${usuario.imagen}`" class="img-fluid rounded shadow" style="max-height: 200px;" />
-        </div>
-      </div>
+      <button class="btn btn-secondary w-100 mt-4" @click="$router.push('/')">Volver</button>
+    </div>
 
-      <button class="btn btn-secondary w-100" @click="$router.push('/usuarios')">Volver</button>
+    <div v-else class="text-center mt-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
     </div>
   </div>
 </template>
 
+
 <script>
-import axios from 'axios';
+import userService from '@/services/userService';
 
 export default {
-  name: 'VerUsuario',
+  name: 'PerfilUsuario',
   data() {
     return {
-      usuario: {}
+      usuario: null
     };
   },
   methods: {
-    async cargarUsuario() {
+    async cargarPerfil() {
       try {
-        const id = this.$route.params.id;
-        const res = await axios.get(`http://localhost:3000/api/users/${id}`);
-        this.usuario = res.data;
+        const response = await userService.perfilUsuario();
+        this.usuario = response.data;
       } catch (error) {
-        console.error('Error al obtener usuario:', error);
+        console.error('Error al cargar el perfil:', error);
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.removeItem('token');
+          this.$router.push('/');
+        }
       }
     },
     formatFecha(fecha) {
-      return new Date(fecha).toLocaleDateString();
+      return new Date(fecha).toLocaleDateString('es-CO', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     }
   },
   mounted() {
-    this.cargarUsuario();
+    this.cargarPerfil();
   }
 };
 </script>

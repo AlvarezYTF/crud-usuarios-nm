@@ -146,7 +146,6 @@ export default {
       mostrarConfirm: false,
       archivoImagen: null,
       validador: null,
-      validadorPaso2: null,
       formulario: {
         tipoDocumento: '',
         numeroDocumento: '',
@@ -172,7 +171,7 @@ export default {
       this.archivoImagen = event.target.files[0];
     },
     async validarPaso1() {
-      const isValid = await this.validador.revalidate();
+      const isValid = await this.validadorPaso1.revalidate();
       if (isValid) {
         this.pasoActual = 2;
 
@@ -251,7 +250,7 @@ export default {
           text: 'El usuario ha sido creado correctamente',
           confirmButtonColor: '#212529'
         });
-        this.$router.push('/login');
+        this.$router.push('/');
       } catch (error) {
         console.error(error.response?.data || error);
         const mensaje = error.response?.data?.error || '❌ Error al registrar usuario';
@@ -288,10 +287,6 @@ export default {
         confirmarContrasena: ''
       };
       this.archivoImagen = null;
-    },
-
-    handleFileUpload(event) {
-      this.archivoImagen = event.target.files[0];
     }
   },
   mounted() {

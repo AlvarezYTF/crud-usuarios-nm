@@ -13,15 +13,9 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/api', userRoutes);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
-
 try{
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
 }catch(e) {
  console.log(e)
 };
-
