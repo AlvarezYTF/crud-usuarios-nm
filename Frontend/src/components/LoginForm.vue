@@ -1,15 +1,24 @@
-<!-- filepath: c:\Users\USUARIO DELL\Downloads\usuarios-nm\Frontend\src\components\LoginForm.vue -->
 <template>
   <div class="login-container">
     <h2>Iniciar sesión</h2>
-    <form @submit.prevent="handleLogin">
+    <form id="formLogin" @submit.prevent>
       <div class="form-group">
-        <label for="correo">correo</label>
-        <input type="correo" id="correo" v-model="correo" placeholder="correo@address.com" />
+        <label for="correo">Correo</label>
+        <input
+          type="email"
+          id="correo"
+          v-model="correo"
+          placeholder="correo@address.com"
+        />
       </div>
       <div class="form-group">
         <label for="contrasena">Contraseña</label>
-        <input type="password" id="contrasena" v-model="contrasena" placeholder="********" />
+        <input
+          type="password"
+          id="contrasena"
+          v-model="contrasena"
+          placeholder="********"
+        />
       </div>
       <button type="submit" :disabled="isSubmitting">Iniciar sesión</button>
     </form>
@@ -21,6 +30,7 @@
 
 <script>
 import authService from "../services/userService";
+import JustValidate from "just-validate";
 
 export default {
   data() {
@@ -30,6 +40,29 @@ export default {
       isSubmitting: false,
     };
   },
+  mounted() {
+    const validate = new JustValidate('#formLogin', {
+      errorFieldCssClass: 'is-invalid',
+      errorLabelStyle: {
+        color: '#d93025',
+        fontSize: '13px',
+        marginTop: '5px',
+      },
+    });
+
+    validate
+      .addField('#correo', [
+        { rule: 'required', errorMessage: 'El correo es requerido' },
+        { rule: 'email', errorMessage: 'Correo no válido' }
+      ])
+      .addField('#contrasena', [
+        { rule: 'required', errorMessage: 'La contraseña es requerida' },
+        { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' }
+      ])
+      .onSuccess(() => {
+        this.handleLogin();
+      });
+  },
   methods: {
     async handleLogin() {
       this.isSubmitting = true;
@@ -38,8 +71,9 @@ export default {
 
         if (response.status === 200) {
           localStorage.setItem('token', response.data.token);
-
           alert("✅ Inicio de sesión exitoso");
+          // Redirige si usas Vue Router:
+          // this.$router.push('/dashboard');
         }
 
       } catch (error) {
@@ -50,8 +84,7 @@ export default {
         this.isSubmitting = false;
       }
     },
-  }
-
+  },
 };
 </script>
 
@@ -90,6 +123,10 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+}
+
+.is-invalid {
+  border-color: #d93025 !important;
 }
 
 button {
