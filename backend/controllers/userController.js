@@ -10,7 +10,7 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-exports.getUserById = async (req, res) => {
+exports.getUserId = async (req, res) => {
   console.log('ID recibido:', req.params.id);
   const { id } = req.params;
 
@@ -31,7 +31,7 @@ exports.createUser = async (req, res) => {
 
     // Si se envió una imagen, guardar el nombre del archivo
     if (req.file) {
-      data.imagen = req.file.filename; // O usar la ruta completa si quieres servirla
+      data.imagen = req.file.filename; // Guardar el nombre del archivo en la base de datos
     }
 
     const { correo, numeroDocumento } = data;
@@ -97,14 +97,14 @@ exports.updatePassword = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(id).select('+contrasena'); // ← Aquí el cambio
+    const user = await User.findById(id).select('+contrasena'); 
 
     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
     const match = await bcrypt.compare(contrasenaActual, user.contrasena);
     if (!match) return res.status(401).json({ message: 'La contraseña actual es incorrecta' });
 
-    user.contrasena = nuevaContrasena; // ← se vuelve a hashear automáticamente por el middleware .pre('save')
+    user.contrasena = nuevaContrasena; // se vuelve a hashear automáticamente por el middleware .pre('save')
     await user.save();
 
     res.json({ message: 'Contraseña actualizada correctamente' });

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import RegistrarUsuario from '../components/RegistrarUsuario.vue'
 import LoginForm from '@/components/LoginForm.vue';
 import PerfilUsuario from '@/components/Perfil.vue';
+import MostrarUsuarios from '@/components/MostrarUsuarios.vue';
 
 const routes = [
   {
@@ -10,9 +11,23 @@ const routes = [
     component: LoginForm,
   },
   {
+    path: '/registrar',
+    name: 'RegistrarUsuario',
+    component: RegistrarUsuario
+  },
+  {
+    path: '/',
+    redirect: '/usuarios'
+  },
+  {
     path: '/register',
     name: 'RegistrarUsuario',
     component: RegistrarUsuario
+  },
+  {
+    path: '/usuarios',
+    name: 'MostrarUsuarios',
+    component: MostrarUsuarios
   },
   {
     path: '/perfil',
