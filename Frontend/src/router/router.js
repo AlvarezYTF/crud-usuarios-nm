@@ -15,9 +15,9 @@ const routes = [
     component: RegistrarUsuario
   },
   {
-    path: '/galeria',
-    name: 'ImagenUsuarios',
-    component: ImagenUsuarios
+    path: '/usuarios/:id',
+    name: 'VerUsuario',
+    component: () => import('@/components/VerUsuario.vue')
   }
 ]
 

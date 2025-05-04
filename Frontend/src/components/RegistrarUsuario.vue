@@ -118,6 +118,8 @@
           </div>
 
           <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
+          <button type="button" class="btn btn-outline-secondary mt-2 w-100" @click="pasoActual = 1">Volver al paso
+            anterior</button>
         </form>
         <div class="login-link">
           <p>¿Ya tienes cuenta inicia sesión? <a href="/">Inicia Sesión</a></p>
@@ -131,6 +133,7 @@
 import JustValidate from 'just-validate';
 import userService from '@/services/userService';
 import { nextTick } from 'vue';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'RegistroCompleto',
@@ -142,6 +145,8 @@ export default {
       mostrarPass: false,
       mostrarConfirm: false,
       archivoImagen: null,
+      validador: null,
+      validadorPaso2: null,
       formulario: {
         tipoDocumento: '',
         numeroDocumento: '',
@@ -167,17 +172,66 @@ export default {
       this.archivoImagen = event.target.files[0];
     },
     async validarPaso1() {
-      const esValido = await this.validadorPaso1.revalidate();
-      if (esValido) {
+      const isValid = await this.validador.revalidate();
+      if (isValid) {
         this.pasoActual = 2;
+
+        this.$nextTick(() => {
+          this.validadorPaso2 = new JustValidate('#formPaso2');
+          this.validadorPaso2
+            .addField('#correo', [
+              { rule: 'required', errorMessage: 'Correo requerido' },
+              { rule: 'email', errorMessage: 'Correo inválido' }
+            ])
+            .addField('#contrasena', [
+              { rule: 'required', errorMessage: 'Contraseña requerida' },
+              { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' }
+            ])
+            .addField('#confirmarContrasena', [
+              {
+                validator: (value, fields) => {
+                  return value === fields['#contrasena'].elem.value;
+                },
+                errorMessage: 'Las contraseñas no coinciden'
+              }
+            ]);
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Formulario incompleto',
+          text: 'Por favor corrige los campos marcados en rojo',
+          confirmButtonColor: '#d33'
+        });
       }
     },
     async validarPaso2() {
-      const esValido = await this.validadorPaso2.revalidate();
-      if (esValido) {
-        this.crearCuenta();
+      const isValid = await this.validadorPaso2.revalidate();
+      if (isValid) {
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: 'Se creará una nueva cuenta con estos datos',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, crear',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#212529',
+          cancelButtonColor: '#aaa'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.crearCuenta();
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Campos inválidos',
+          text: 'Por favor revisa los campos del formulario',
+          confirmButtonColor: '#d33'
+        });
       }
     },
+
     async crearCuenta() {
       const formData = new FormData();
       for (const key in this.formulario) {
@@ -191,18 +245,53 @@ export default {
 
       try {
         await userService.registrarUsuario(formData);
-        alert('✅ Usuario registrado correctamente');
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario registrado',
+          text: 'El usuario ha sido creado correctamente',
+          confirmButtonColor: '#212529'
+        });
         this.$router.push('/login');
       } catch (error) {
         console.error(error.response?.data || error);
         const mensaje = error.response?.data?.error || '❌ Error al registrar usuario';
 
-        if (mensaje.includes('documento')){
+        if (mensaje.includes('documento')) {
           this.pasoActual = 1;
         }
 
-        alert(mensaje);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: mensaje,
+          confirmButtonColor: '#d33'
+        });
       }
+    },
+    resetFormulario() {
+      this.formulario = {
+        tipoDocumento: '',
+        numeroDocumento: '',
+        primerNombre: '',
+        segundoNombre: '',
+        primerApellido: '',
+        segundoApellido: '',
+        telefono: '',
+        direccion: '',
+        ciudad: '',
+        pais: '',
+        fechaNacimiento: '',
+        lugarNacimiento: '',
+        imagen: '',
+        correo: '',
+        contrasena: '',
+        confirmarContrasena: ''
+      };
+      this.archivoImagen = null;
+    },
+
+    handleFileUpload(event) {
+      this.archivoImagen = event.target.files[0];
     }
   },
   mounted() {
