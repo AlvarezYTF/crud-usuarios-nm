@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'El país es obligatorio.']
   },
+  lugarNacimiento: {
+    type: String,
+    required: [true, 'El país es obligatorio.']
+  },
   tipoDocumento: {
     type: String,
     required: [true, 'El tipo de documento es obligatorio.'],
@@ -95,6 +99,7 @@ UserSchema.pre('save', function (next) {
   this.segundoApellido = this.segundoApellido.toUpperCase();  
   this.ciudad = this.ciudad.toUpperCase();
   this.pais = this.pais.toUpperCase();
+  this.lugarNacimiento = this.lugarNacimiento.toUpperCase();
   this.direccion = this.direccion.toUpperCase();
   next();
 });
@@ -108,6 +113,7 @@ UserSchema.pre('findOneAndUpdate', function (next) {
   if (update.segundoApellido) this.set('segundoApellido', update.segundoApellido.toUpperCase());
   if (update.ciudad) this.set('ciudad', update.ciudad.toUpperCase());
   if (update.pais) this.set('pais', update.pais.toUpperCase());
+  if (update.lugarNacimiento) this.set('pais', update.lugarNacimiento.toUpperCase());
   if (update.direccion) this.set('direccion', update.direccion.toUpperCase());
   next();
 });
