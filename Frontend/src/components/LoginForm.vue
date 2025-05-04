@@ -1,38 +1,27 @@
-<template>
-  <div class="login-container">
-    <h2>Iniciar sesión</h2>
-    <form id="loginForm" @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="correo">Correo</label>
-        <input
-          type="email"
-          id="correo"
-          v-model="correo"
-          placeholder="correo@address.com"
-        />
+  <template>
+    <div class="login-container">
+      <h2>Iniciar sesión</h2>
+      <form id="formLogin">
+        <div class="form-group">
+          <label for="correo">Correo</label>
+          <input type="email" id="correo" v-model="correo" placeholder="correo@address.com" />
+        </div>
+        <div class="form-group">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" v-model="contrasena" placeholder="********" />
+        </div>
+        <button type="submit" :disabled="isSubmitting">Iniciar sesión</button>
+      </form>
+      <div class="register-link">
+        <p>¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
       </div>
-      <div class="form-group">
-        <label for="contrasena">Contraseña</label>
-        <input
-          type="password"
-          id="contrasena"
-          v-model="contrasena"
-          placeholder="********"
-        />
-      </div>
-      <button type="submit" :disabled="isSubmitting">Iniciar sesión</button>
-    </form>
-    <div class="register-link">
-      <p>¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
     </div>
-  </div>
-</template>
+  </template>
 
 <script>
 import JustValidate from 'just-validate';
 import Swal from 'sweetalert2';
 import authService from '../services/userService';
-import { nextTick } from 'vue';
 
 export default {
   data() {
@@ -40,48 +29,11 @@ export default {
       correo: "",
       contrasena: "",
       isSubmitting: false,
-      validador: null,
+      validate: null
     };
   },
-  methods: {
-    async handleLogin() {
-      const valid = await this.validador.validate();
-      if (!valid) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Formulario inválido',
-          text: 'Por favor completa correctamente los campos',
-          confirmButtonColor: '#2c3e50',
-        });
-        return;
-      }
-
-      this.isSubmitting = true;
-      try {
-        const response = await authService.login(this.email, this.password);
-        Swal.fire({
-          icon: 'success',
-          title: 'Inicio de sesión exitoso',
-          text: 'Bienvenido al sistema',
-          confirmButtonColor: '#2c3e50',
-        });
-        console.log(response);
-        // Redirige si lo necesitas, por ejemplo:
-        // this.$router.push('/usuarios');
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error de inicio de sesión',
-          text: error.response?.data?.message || error.message,
-          confirmButtonColor: '#d33',
-        });
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-  },
   mounted() {
-    const validate = new JustValidate('#formLogin', {
+    this.validate = new JustValidate('#formLogin', {
       errorFieldCssClass: 'is-invalid',
       errorLabelStyle: {
         color: '#d93025',
@@ -90,7 +42,7 @@ export default {
       },
     });
 
-    validate
+    this.validate
       .addField('#correo', [
         { rule: 'required', errorMessage: 'El correo es requerido' },
         { rule: 'email', errorMessage: 'Correo no válido' }
@@ -102,7 +54,35 @@ export default {
       .onSuccess(() => {
         this.handleLogin();
       });
-  }
+  },
+  methods: {
+    async handleLogin() {
+      this.isSubmitting = true;
+      try {
+        const response = await authService.login(this.correo, this.contrasena);
+        if (response.status === 200) {
+          localStorage.setItem('token', response.data.token);
+          Swal.fire({
+            icon: 'success',
+            title: 'Inicio de sesión exitoso',
+            text: 'Bienvenido al sistema',
+            confirmButtonColor: '#2c3e50',
+          });
+          console.log(response);
+          this.$router.push('/perfil');
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de inicio de sesión',
+          text: error.response?.data?.error,
+          confirmButtonColor: '#d33',
+        });
+      } finally {
+        this.isSubmitting = false;
+      }
+    }
+  },
 };
 </script>
 
