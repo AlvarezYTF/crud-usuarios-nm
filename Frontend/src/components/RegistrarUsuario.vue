@@ -73,13 +73,16 @@
             </div>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-4">
             <label>Imagen de perfil</label>
             <input type="file" class="form-control" @change="handleFileUpload" />
           </div>
-
+          
           <button type="submit" class="btn btn-dark w-100">Siguiente</button>
         </form>
+        <div class="login-link">
+          <p>¿Ya tienes cuenta inicia sesión? <a href="/">Inicia Sesión</a></p>
+        </div>
       </div>
 
       <!-- Paso 2: Crear cuenta -->
@@ -115,6 +118,9 @@
 
           <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
         </form>
+        <div class="login-link">
+          <p>¿Ya tienes cuenta inicia sesión? <a href="/">Inicia Sesión</a></p>
+        </div>
       </div>
     </div>
   </div>
@@ -257,9 +263,39 @@ watch: {
 </script>
 
 <style scoped>
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  font-family: Arial, sans-serif !important;
+}
+
+input::placeholder {
+  color: gray;
+  font-size: 14px;
+  font-style: italic;
+  opacity: 0.7;
+}
+
 .card {
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   padding: 2rem !important; /* más espacio interno */
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
 }
 </style>

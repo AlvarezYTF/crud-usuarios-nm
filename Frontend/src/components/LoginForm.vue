@@ -5,24 +5,17 @@
     <form @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          v-model="email"
-          placeholder="email@address.com"
-        />
+        <input type="email" id="email" v-model="email" placeholder="email@address.com" />
       </div>
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input
-          type="password"
-          id="password"
-          v-model="password"
-          placeholder="********"
-        />
+        <input type="password" id="password" v-model="password" placeholder="********" />
       </div>
       <button type="submit" :disabled="isSubmitting">Iniciar sesión</button>
     </form>
+    <div class="register-link">
+      <p>¿No tienes una cuenta? <a href="/registrar">Regístrate aquí</a></p>
+    </div>
   </div>
 </template>
 
@@ -42,15 +35,20 @@ export default {
       this.isSubmitting = true;
       try {
         const response = await authService.login(this.email, this.password);
-        alert("Inicio de sesión exitoso");
-        console.log(response);
+
+        if (response.status === 200) {
+          alert("Inicio de sesión exitoso");
+          console.log(response);
+        }
+
       } catch (error) {
-        alert("Error al iniciar sesión: " + error.message);
+        alert("Error al iniciar sesión: " + (error.response?.data?.message || error.message));
       } finally {
         this.isSubmitting = false;
       }
     },
-  },
+  }
+
 };
 </script>
 
@@ -94,7 +92,7 @@ input {
 button {
   width: 100%;
   padding: 10px;
-  background-color: #2c3e50;
+  background-color: #11151a;
   color: white;
   border: none;
   border-radius: 4px;
