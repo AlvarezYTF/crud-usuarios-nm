@@ -113,3 +113,19 @@ exports.updatePassword = async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
+exports.getPerfil = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const usuario = await User.findById(userId);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json(usuario);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+};
