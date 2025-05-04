@@ -3,6 +3,7 @@ import RegistrarUsuario from '../components/RegistrarUsuario.vue'
 import LoginForm from '@/components/LoginForm.vue';
 import PerfilUsuario from '@/components/Perfil.vue';
 import MostrarUsuarios from '@/components/MostrarUsuarios.vue';
+import VerUsuario from '@/components/VerUsuario.vue';
 
 const routes = [
   {
@@ -11,18 +12,14 @@ const routes = [
     component: LoginForm,
   },
   {
-    path: '/registrar',
-    name: 'RegistrarUsuario',
-    component: RegistrarUsuario
-  },
-  {
-    path: '/',
-    redirect: '/usuarios'
-  },
-  {
     path: '/register',
     name: 'RegistrarUsuario',
     component: RegistrarUsuario
+  },
+  {
+    path: '/verUsuario/:id',
+    name: 'VerUsuario',
+    component: VerUsuario
   },
   {
     path: '/usuarios',

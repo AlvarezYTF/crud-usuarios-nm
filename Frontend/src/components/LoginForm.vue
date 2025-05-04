@@ -69,7 +69,7 @@ export default {
             confirmButtonColor: '#2c3e50',
           });
           console.log(response);
-          this.$router.push('/perfil');
+          this.$router.push('/usuarios');
         }
       } catch (error) {
         Swal.fire({

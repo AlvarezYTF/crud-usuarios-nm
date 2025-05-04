@@ -16,20 +16,22 @@
             <th>Documento</th>
             <th>Correo</th>
             <th>Teléfono</th>
-            <th>Dirección</th> 
+            <th>Dirección</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(usuario, index) in usuarios" :key="usuario._id">
             <td>{{ index + 1 }}</td>
-            <td>{{ usuario.primerNombre }} {{ usuario.segundoNombre }} {{ usuario.primerApellido }} {{ usuario.segundoApellido }}</td>
+            <td>{{ usuario.primerNombre }} {{ usuario.segundoNombre }} {{ usuario.primerApellido }} {{
+              usuario.segundoApellido }}</td>
             <td>{{ usuario.numeroDocumento }}</td>
             <td>{{ usuario.correo }}</td>
             <td>{{ usuario.telefono }}</td>
             <td>{{ usuario.direccion }}</td>
             <td>
-              <router-link :to="{ name: 'VerUsuario', params: { id: usuario._id } }" class="btn btn-primary">Ver</router-link>
+              <router-link :to="{ name: 'VerUsuario', params: { id: usuario._id } }"
+                class="btn btn-primary">Ver</router-link>
               <button class="btn btn-sm btn-warning me-2">
                 <i class="bi bi-pencil"></i> Actualizar
               </button>
@@ -50,40 +52,38 @@
 
 <script>
 import userService from '../services/userService';
+
 export default {
   name: 'AdminDashboard',
   data() {
-  return {
-    usuarios: [],
-    busquedaId: null // ID del usuario a buscar
-  };
-},
+    return {  
+      usuarios: [],
+      busquedaId: null // ID del usuario a buscar
+    };
+  },
   methods: {
     async cargarUsuarios() {
       try {
-        const response = await fetch('http://localhost:3000/api/users');
-        if (!response.ok) {
-          throw new Error('Error al cargar los usuarios');
-        }
-        this.usuarios = await response.json();
+        const response = await userService.MostrarUsuarios();
+        this.usuarios = response.data;
       } catch (error) {
-        console.error(error);
+        console.error('Error al cargar los usuarios:', error);
       }
     },
     async buscarPorId() {
-    if (!this.busquedaId) return;
+      if (!this.busquedaId) return;
 
-    try {
-      const response = await userService.getUserId(this.busquedaId);
-      this.usuarios = [response.data]; // muestra solo el usuario encontrado
-    } catch (error) {
-      console.error('Usuario no encontrado');
-      this.usuarios = []; // limpia tabla si no encuentra
+      try {
+        const response = await userService.getUserId(this.busquedaId);
+        this.usuarios = [response.data]; // muestra solo el usuario encontrado
+      } catch (error) {
+        console.error('Usuario no encontrado');
+        this.usuarios = []; // limpia tabla si no encuentra
+      }
     }
-  }
   },
   mounted() {
-  this.cargarUsuarios();
+    this.cargarUsuarios();
   },
   watch: {
     busquedaId(newValue) {
