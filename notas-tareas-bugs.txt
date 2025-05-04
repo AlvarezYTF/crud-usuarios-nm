@@ -1,0 +1,1 @@
+-Solucionar el registro de usuario no sea duplicado algunos campos

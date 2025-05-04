@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { login } = require('../controllers/loginController');
 
-// Definición del esquema para el modelo User
 const UserSchema = new mongoose.Schema({
   primerNombre: {
     type: String,
@@ -24,12 +22,13 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    match: [/.+@.+\..+/, 'Por favor, introduce un correo electrónico válido.']
+    match: [/^\S+@\S+\.\S+$/, 'Por favor ingresa un email válido'],
+    select: false
   },
   contrasena: {
     type: String,
     required: [true, 'La contraseña es obligatoria.'],
-    minlength: [6, 'La contraseña debe tener al menos 6 caracteres.'],
+    minlength: [8, 'La contraseña debe tener al menos 8 caracteres.'],
     select: false
   },
   imagen: {
@@ -72,33 +71,19 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'La fecha de nacimiento es obligatoria.']
   },
-  
   estado: {
     type: Boolean,
     default: true
   },
-  
-  correo: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: [/^\S+@\S+\.\S+$/, 'Por favor ingresa un email válido'],
-  },
-  contrasena: {
-    type: String, 
-    required: true,
-    minlength: 8,
-    select: false, // No se mostrará por defecto al consultar el usuario
-  },
-  LoginAttempts: {
+  loginAttempts: {
     type: Number,
     default: 0,
+    select: false
   },
   lockUntil: {
     type: Date,
-  },
+    select: false
+  }
 }, {
   timestamps: true
 });
