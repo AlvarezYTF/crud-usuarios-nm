@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:3000/api';
 
 export default {
-  mostrarsUsuarios() {
+    MostrarUsuarios() {
     return axios.get(`${BASE_URL}/users`);
   },
 
@@ -11,7 +11,6 @@ export default {
     return axios.post(`${BASE_URL}/users`, usuario);
   },
   
-
   login(email, password) {
     return axios.post(`${BASE_URL}/login`, {
       correo: email,
