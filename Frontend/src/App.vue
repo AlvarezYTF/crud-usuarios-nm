@@ -1,16 +1,22 @@
 <template>
-  <div>
-    <ChangePasswordForm userId="66345cb6b8a7fc841b0c4c0f" />
-  </div>
-</template>
-
-<script>
-import ChangePasswordForm from './components/ChangePasswordForm.vue';
-import UserEditForm from './components/UserEditForm.vue';
-
-export default {
-  components: {
-    ChangePasswordForm
+    <div id="app">
+      <router-view></router-view>
+    </div>
+  </template>
+  
+  <style>
+  #app {
+    font-family: Arial, sans-serif;
   }
-}
-</script>
+  
+  nav {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  h1 {
+    margin: 0;
+  }
+  </style>
