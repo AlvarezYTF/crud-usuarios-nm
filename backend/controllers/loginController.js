@@ -55,24 +55,3 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Error en el servidor', detalles: error.message });
   }
 };
-
-// Controlador de registro de usuarios
-exports.register = async (req, res) => {
-  try {
-    const { correo, contrasena } = req.body;
-
-    // Verificar si el correo ya está registrado
-    const existeUsuario = await User.findOne({ correo });
-    if (existeUsuario) {
-      return res.status(400).json({ error: 'El correo ya está registrado' });
-    }
-
-    // Crear un nuevo usuario
-    const nuevoUsuario = new User({ correo, contrasena });
-    await nuevoUsuario.save();
-
-    res.status(201).json({ message: 'Usuario registrado exitosamente' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error en el servidor', detalles: error.message });
-  }
-};

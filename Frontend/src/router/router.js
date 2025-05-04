@@ -5,12 +5,12 @@ import ImagenUsuarios from '@/components/ImagenUsuarios.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: LoginForm,
   },
   {
-    path: '/registrar',
+    path: '/register',
     name: 'RegistrarUsuario',
     component: RegistrarUsuario
   },

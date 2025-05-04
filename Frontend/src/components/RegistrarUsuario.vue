@@ -192,7 +192,7 @@ export default {
       try {
         await userService.registrarUsuario(formData);
         alert('✅ Usuario registrado correctamente');
-        this.pasoActual = 1;
+        this.$router.push('/login');
       } catch (error) {
         console.error(error.response?.data || error);
         const mensaje = error.response?.data?.error || '❌ Error al registrar usuario';

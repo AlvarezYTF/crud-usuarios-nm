@@ -4,17 +4,17 @@
     <h2>Iniciar sesión</h2>
     <form @submit.prevent="handleLogin">
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" v-model="email" placeholder="email@address.com" />
+        <label for="correo">correo</label>
+        <input type="correo" id="correo" v-model="correo" placeholder="correo@address.com" />
       </div>
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" v-model="password" placeholder="********" />
+        <label for="contrasena">Contraseña</label>
+        <input type="password" id="contrasena" v-model="contrasena" placeholder="********" />
       </div>
       <button type="submit" :disabled="isSubmitting">Iniciar sesión</button>
     </form>
     <div class="register-link">
-      <p>¿No tienes una cuenta? <a href="/registrar">Regístrate aquí</a></p>
+      <p>¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
     </div>
   </div>
 </template>
@@ -25,8 +25,8 @@ import authService from "../services/userService";
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      correo: "",
+      contrasena: "",
       isSubmitting: false,
     };
   },
@@ -34,15 +34,18 @@ export default {
     async handleLogin() {
       this.isSubmitting = true;
       try {
-        const response = await authService.login(this.email, this.password);
+        const response = await authService.login(this.correo, this.contrasena);
 
         if (response.status === 200) {
-          alert("Inicio de sesión exitoso");
-          console.log(response);
+          localStorage.setItem('token', response.data.token);
+
+          alert("✅ Inicio de sesión exitoso");
         }
 
       } catch (error) {
-        alert("Error al iniciar sesión: " + (error.response?.data?.message || error.message));
+        console.error("🔍 Error:", error.response?.data);
+        const mensaje = error.response?.data?.error || '❌ Error al iniciar sesión';
+        alert(mensaje);
       } finally {
         this.isSubmitting = false;
       }
