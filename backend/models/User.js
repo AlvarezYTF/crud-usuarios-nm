@@ -32,8 +32,7 @@ const UserSchema = new mongoose.Schema({
     select: false
   },
   imagen: {
-    type: String,
-    required: [true, 'La imagen es obligatoria.']
+    type: String
   },
   telefono: {
     type: String,

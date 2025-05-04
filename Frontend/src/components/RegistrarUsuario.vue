@@ -3,7 +3,7 @@
     <div class="card p-4" style="width: 100%; max-width: 800px;">
       <div v-if="pasoActual === 1">
         <h3 class="fw-bold mb-3">Formulario de registro</h3>
-        <form id="formPaso1" @submit.prevent>
+        <form id="formPaso1" @submit.prevent="validarPaso1">
           <div class="row g-3 mb-3">
             <div class="col">
               <select id="tipoDocumento" class="form-select" v-model="formulario.tipoDocumento">
@@ -77,7 +77,7 @@
             <label>Imagen de perfil</label>
             <input type="file" class="form-control" @change="handleFileUpload" />
           </div>
-          
+
           <button type="submit" class="btn btn-dark w-100">Siguiente</button>
         </form>
         <div class="login-link">
@@ -88,10 +88,11 @@
       <!-- Paso 2: Crear cuenta -->
       <div v-else-if="pasoActual === 2">
         <h3 class="fw-bold mb-3">Crea tu cuenta</h3>
-        <form id="formPaso2" @submit.prevent>
+        <form id="formPaso2" @submit.prevent="validarPaso2">
           <div class="mb-3">
             <label>Correo electrónico</label>
-            <input type="email" id="correo" class="form-control" v-model="formulario.correo" placeholder="Ingresa un correo"/>
+            <input type="email" id="correo" class="form-control" v-model="formulario.correo"
+              placeholder="Ingresa un correo" />
           </div>
 
           <div class="mb-3">
@@ -109,7 +110,7 @@
             <label>Confirmar contraseña</label>
             <div class="input-group">
               <input :type="mostrarConfirm ? 'text' : 'password'" id="confirmarContrasena" class="form-control"
-                v-model="formulario.confirmarContrasena" placeholder="Confirmar contraseña"/>
+                v-model="formulario.confirmarContrasena" placeholder="Confirmar contraseña" />
               <button type="button" class="btn btn-outline-secondary" @click="mostrarConfirm = !mostrarConfirm">
                 <i :class="mostrarConfirm ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
               </button>
@@ -136,6 +137,8 @@ export default {
   data() {
     return {
       pasoActual: 1,
+      validadorPaso1: null,
+      validadorPaso2: null,
       mostrarPass: false,
       mostrarConfirm: false,
       archivoImagen: null,
@@ -163,6 +166,18 @@ export default {
     handleFileUpload(event) {
       this.archivoImagen = event.target.files[0];
     },
+    async validarPaso1() {
+      const esValido = await this.validadorPaso1.revalidate();
+      if (esValido) {
+        this.pasoActual = 2;
+      }
+    },
+    async validarPaso2() {
+      const esValido = await this.validadorPaso2.revalidate();
+      if (esValido) {
+        this.crearCuenta();
+      }
+    },
     async crearCuenta() {
       const formData = new FormData();
       for (const key in this.formulario) {
@@ -173,19 +188,27 @@ export default {
       if (this.archivoImagen) {
         formData.append('imagen', this.archivoImagen);
       }
+
       try {
         await userService.registrarUsuario(formData);
         alert('✅ Usuario registrado correctamente');
         this.pasoActual = 1;
       } catch (error) {
         console.error(error.response?.data || error);
-        alert('❌ Error al registrar usuario');
+        const mensaje = error.response?.data?.error || '❌ Error al registrar usuario';
+
+        if (mensaje.includes('documento')){
+          this.pasoActual = 1;
+        }
+
+        alert(mensaje);
       }
     }
   },
   mounted() {
-    const val1 = new JustValidate('#formPaso1');
-    val1
+    this.validadorPaso1 = new JustValidate('#formPaso1');
+
+    this.validadorPaso1
       .addField('#tipoDocumento', [
         { rule: 'required', errorMessage: 'Tipo de documento obligatorio' }
       ])
@@ -206,7 +229,7 @@ export default {
         { rule: 'required', errorMessage: 'La nacionalidad es obligatorio' }
       ])
       .addField('#telefono', [
-        { rule: 'required', errorMessage: 'El telefono es obligatorio' }
+        { rule: 'required', errorMessage: 'El teléfono es obligatorio' }
       ])
       .addField('#fechaNacimiento', [
         {
@@ -223,47 +246,44 @@ export default {
         }
       ])
       .addField('#lugarNacimiento', [
-        { rule: 'required', errorMessage: 'El lugar de nacimiento es obligatoria' }
-      ])
-    .onSuccess(() => {
-      this.pasoActual = 2;
-    });
-},
-watch: {
-  pasoActual(nuevoPaso) {
-    if (nuevoPaso === 2) {
-      nextTick(() => {
-        const val2 = new JustValidate('#formPaso2');
-        val2
-          .addField('#correo', [
-            { rule: 'required', errorMessage: 'Correo requerido' },
-            { rule: 'email', errorMessage: 'Correo inválido' }
-          ])
-          .addField('#contrasena', [
-            { rule: 'required', errorMessage: 'Contraseña requerida' },
-            { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' }
-          ])
-          .addField('#confirmarContrasena', [
-            {
-              validator: (value, fields) => {
-                return value === fields['#contrasena'].elem.value;
-              },
-              errorMessage: 'Las contraseñas no coinciden'
-            }
-          ])
-          .onSuccess(() => {
-            this.crearCuenta();
-          });
-      });
+        { rule: 'required', errorMessage: 'El lugar de nacimiento es obligatorio' }
+      ]);
+  },
+
+  watch: {
+    pasoActual(nuevoPaso) {
+      if (nuevoPaso === 2) {
+        nextTick(() => {
+          if (this.validadorPaso2) {
+            this.validadorPaso2.destroy(); // evitar múltiples instancias
+          }
+
+          this.validadorPaso2 = new JustValidate('#formPaso2');
+          this.validadorPaso2
+            .addField('#correo', [
+              { rule: 'required', errorMessage: 'Correo requerido' },
+              { rule: 'email', errorMessage: 'Correo inválido' }
+            ])
+            .addField('#contrasena', [
+              { rule: 'required', errorMessage: 'Contraseña requerida' },
+              { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' }
+            ])
+            .addField('#confirmarContrasena', [
+              {
+                validator: (value, fields) =>
+                  value === fields['#contrasena'].elem.value,
+                errorMessage: 'Las contraseñas no coinciden'
+              }
+            ]);
+        });
+      }
     }
   }
-}
-
 };
 </script>
 
-<style scoped>
 
+<style scoped>
 .container {
   max-width: 800px;
   margin: auto;
@@ -280,7 +300,8 @@ input::placeholder {
 .card {
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  padding: 2rem !important; /* más espacio interno */
+  padding: 2rem !important;
+  /* más espacio interno */
 }
 
 .login-link {

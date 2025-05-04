@@ -34,6 +34,18 @@
         data.imagen = req.file.filename; // O usar la ruta completa si quieres servirla
       }
 
+      const { correo, numeroDocumento } = data;
+
+      const existeCorreo = await User.findOne({ correo });
+      if (existeCorreo) {
+        return res.status(400).json({ error: 'El correo ya está registrado' });
+      }
+
+      const existeDocumento = await User.findOne({ numeroDocumento });
+      if (existeDocumento) {
+        return res.status(400).json({ error: 'El número de documento ya está registrado' });
+      }
+
       const user = new User(data);
       await user.save();
 
