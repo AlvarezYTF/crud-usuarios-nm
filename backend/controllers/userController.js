@@ -131,30 +131,19 @@ exports.getPerfil = async (req, res) => {
 };
 const fs = require('fs');
 const path = require('path');
-exports.updateUser = async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
-
+exports.updateImage = async (req, res) => {
   try {
-    if (req.files && req.files.imagen) {
-      const file = req.files.imagen;
-      const filename = Date.now() + path.extname(file.name);
-      const uploadPath = path.join(__dirname, '..', 'uploads', filename);
+    const userId = req.params.id;
+    const nuevaImagen = req.file ? req.file.filename : null;
 
-      await file.mv(uploadPath);
+    if (!nuevaImagen) return res.status(400).json({ mensaje: 'No se subió ninguna imagen' });
 
-      updateData.imagen = filename;
-    }
+    const usuario = await Usuario.findByIdAndUpdate(userId, { imagen: nuevaImagen }, { new: true });
+    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
 
-    const updatedUser = await User.findByIdAndUpdate(id, { $set: updateData }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-    res.json(updatedUser);
+    res.json({ mensaje: 'Imagen actualizada correctamente', usuario });
   } catch (error) {
-    console.error('Error actualizando usuario con imagen:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+    console.error('Error al actualizar imagen:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar la imagen' });
   }
 };
