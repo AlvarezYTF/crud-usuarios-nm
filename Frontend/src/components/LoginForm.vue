@@ -62,14 +62,18 @@ export default {
         const response = await authService.login(this.correo, this.contrasena);
         if (response.status === 200) {
           localStorage.setItem('token', response.data.token);
+          localStorage.setItem('rol', response.data.rol);
           Swal.fire({
             icon: 'success',
             title: 'Inicio de sesión exitoso',
             text: 'Bienvenido al sistema',
             confirmButtonColor: '#2c3e50',
           });
-          console.log(response);
-          this.$router.push('/usuarios');
+          if (response.data.rol === 'admin') {
+            this.$router.push('/usuarios');
+          } else {
+            this.$router.push('/perfil');
+          }
         }
       } catch (error) {
         Swal.fire({

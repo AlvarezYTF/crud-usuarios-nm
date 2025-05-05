@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
       sameSite: 'strict',
     });
 
-    res.status(200).json({ message: 'Login exitoso', token });
+    res.status(200).json({ message: 'Login exitoso', rol: user.rol, token });
   } catch (error) {
     res.status(500).json({ error: 'Error en el servidor', detalles: error.message });
   }
