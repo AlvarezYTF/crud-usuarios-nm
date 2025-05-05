@@ -4,6 +4,7 @@ import LoginForm from '@/components/LoginForm.vue';
 import PerfilUsuario from '@/components/Perfil.vue';
 import MostrarUsuarios from '@/components/MostrarUsuarios.vue';
 import VerUsuario from '@/components/VerUsuario.vue';
+import EditarUsuario from '@/components/EditarUsuario.vue';
 
 const routes = [
   {
@@ -30,7 +31,12 @@ const routes = [
     path: '/perfil',
     name: 'PerfilUsuario',
     component: PerfilUsuario
-  }
+  },
+  {
+    path:'/editarUsuario/:id',
+    name: 'EditarUsuario',
+    component: EditarUsuario
+  },
 ]
 
 const router = createRouter({

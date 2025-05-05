@@ -32,9 +32,8 @@
             <td>
               <router-link :to="{ name: 'VerUsuario', params: { id: usuario._id } }"
                 class="btn btn-sm btn-primary me-2">Ver</router-link>
-              <button class="btn btn-sm btn-warning me-2">
-                <i class="bi bi-pencil"></i> Actualizar
-              </button>
+              <router-link :to="{ name: 'EditarUsuario', params: { id: usuario._id } }"
+                class="btn btn-sm btn-secondary me-2">Editar</router-link>
               <button class="btn btn-danger btn-sm" @click="eliminarUsuario(usuario._id)">
                 Eliminar
               </button>
