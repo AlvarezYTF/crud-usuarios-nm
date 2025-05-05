@@ -5,6 +5,7 @@ import PerfilUsuario from '@/components/Perfil.vue';
 import MostrarUsuarios from '@/components/MostrarUsuarios.vue';
 import VerUsuario from '@/components/VerUsuario.vue';
 import EditarUsuario from '@/components/EditarUsuario.vue';
+import ActualizarImagen from '@/components/ActualizarImagen.vue';
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
     name: 'EditarUsuario',
     component: EditarUsuario
   },
+  {
+    path: '/actualizar-imagen/:id',
+    name: 'ActualizarImagen',
+    component: ActualizarImagen
+  }
 ]
 
 const router = createRouter({

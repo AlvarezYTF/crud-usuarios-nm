@@ -53,4 +53,19 @@ export default {
       }
     });
   },
+  updateUserImage(id, imagenFile) {
+    const formData = new FormData();
+    formData.append('imagen', imagenFile);
+  
+    return axios.put(`${BASE_URL}/users/${id}/image`, formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
 };
+
+
+
+

@@ -29,5 +29,6 @@ router.get('/perfil', auth, userController.getPerfil);
 
 //route login
 router.post('/login', loginController.login);
+router.put('/users/:id/image', upload.single('imagen'), userController.updateImage);
 
 module.exports = router;

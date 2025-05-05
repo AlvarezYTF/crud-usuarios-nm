@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+// const fs = require('fs');
+// const path = require('path');
 
 exports.getUsers = async (req, res) => {
   try {
@@ -140,5 +142,21 @@ exports.getPerfil = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error del servidor' });
+  }
+};
+exports.updateImage = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const nuevaImagen = req.file ? req.file.filename : null;
+
+    if (!nuevaImagen) return res.status(400).json({ mensaje: 'No se subió ninguna imagen' });
+
+    const usuario = await Usuario.findByIdAndUpdate(userId, { imagen: nuevaImagen }, { new: true });
+    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+
+    res.json({ mensaje: 'Imagen actualizada correctamente', usuario });
+  } catch (error) {
+    console.error('Error al actualizar imagen:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar la imagen' });
   }
 };
