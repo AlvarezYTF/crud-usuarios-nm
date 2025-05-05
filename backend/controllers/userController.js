@@ -29,9 +29,8 @@ exports.createUser = async (req, res) => {
   try {
     const data = req.body;
 
-    // Si se envió una imagen, guardar el nombre del archivo
     if (req.file) {
-      data.imagen = req.file.filename; // Guardar el nombre del archivo en la base de datos
+      data.imagen = req.file.filename;
     }
 
     const { correo, numeroDocumento } = data;
@@ -60,17 +59,31 @@ exports.updateUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
     if (!updatedUser) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    res.json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.error('Error actualizando usuario:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Error de validación', errors: error.errors });
+    }
+
+    return res.status(500).json({ message: 'Error del servidor' });
   }
 };
+
 
 exports.deleteUser = async (req, res) => {
   try {

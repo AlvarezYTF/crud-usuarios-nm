@@ -108,19 +108,31 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
-// Middleware para convertir campos a mayúsculas al actualizar
 UserSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate();
-  if (update.primerNombre) this.set('primerNombre', update.primerNombre.toUpperCase());
-  if (update.segundoNombre) this.set('segundoNombre', update.segundoNombre.toUpperCase());
-  if (update.primerApellido) this.set('primerApellido', update.primerApellido.toUpperCase());
-  if (update.segundoApellido) this.set('segundoApellido', update.segundoApellido.toUpperCase());
-  if (update.ciudad) this.set('ciudad', update.ciudad.toUpperCase());
-  if (update.pais) this.set('pais', update.pais.toUpperCase());
-  if (update.lugarNacimiento) this.set('pais', update.lugarNacimiento.toUpperCase());
-  if (update.direccion) this.set('direccion', update.direccion.toUpperCase());
+
+  if (update && update.$set) {
+    const fields = [
+      'primerNombre',
+      'segundoNombre',
+      'primerApellido',
+      'segundoApellido',
+      'ciudad',
+      'pais',
+      'lugarNacimiento',
+      'direccion'
+    ];
+
+    fields.forEach(field => {
+      if (update.$set[field]) {
+        update.$set[field] = update.$set[field].toUpperCase();
+      }
+    });
+  }
+
   next();
 });
+
 
 // Middleware para encriptar la contraseña antes de guardar
 UserSchema.pre('save', async function(next) {
