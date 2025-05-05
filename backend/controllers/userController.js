@@ -25,6 +25,17 @@ exports.getUserId = async (req, res) => {
   }
 };
 
+exports.buscarDocumento = async (req, res) => {
+  try {
+    const documento = req.params.documento;
+    const usuario = await User.findOne({ numeroDocumento: documento });
+    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al buscar por documento' });
+  }
+};
+
 exports.createUser = async (req, res) => {
   try {
     const data = req.body;

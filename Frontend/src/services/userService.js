@@ -19,6 +19,10 @@ export default {
     });
   },
 
+  buscarDocumento(documento) {
+    return axios.get(`${BASE_URL}/users/documento/${documento}`);
+  },
+
   registrarUsuario(usuario) {
     return axios.post(`${BASE_URL}/users`, usuario);
   },

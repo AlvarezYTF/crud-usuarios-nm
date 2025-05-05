@@ -3,9 +3,18 @@
     <div class="bg-white p-4 shadow rounded-4">
       <h4 class="mb-4 fw-bold text-center text-primary">Dashboard de Administrador</h4>
 
+      <button @click="cerrarSesion"
+          class="btn btn-outline-danger btn-sm position-absolute start-40 top-10 translate-middle-y">
+          Cerrar sesión
+      </button>
+
+      <div class="d-flex justify-content-end">
+        <img src="" alt="Imagen de perfil" class="rounded-circle shadow" />
+      </div>
+
       <div class="mb-4 d-flex justify-content-center">
-        <input v-model="busquedaId" type="text" class="form-control w-50 me-2" placeholder="Buscar usuario por ID">
-        <button @click="buscarPorId" class="btn btn-info">Buscar</button>
+        <input v-model="busquedaDocumento" type="text" class="form-control w-50 me-2" placeholder="Buscar usuario por Numero de documento" />
+        <button @click="buscarPorDocumento" class="btn btn-info">Buscar</button>
       </div>
 
       <table class="table table-bordered table-hover text-center" v-if="usuarios.length">
@@ -58,7 +67,7 @@ export default {
   data() {
     return {  
       usuarios: [],
-      busquedaId: null // ID del usuario a buscar
+      busquedaDocumento: null // ID del usuario a buscar
     };
   },
   methods: {
@@ -70,30 +79,35 @@ export default {
         console.error('Error al cargar los usuarios:', error);
       }
     },
-    async buscarPorId() {
-      if (!this.busquedaId) return;
+
+    async buscarPorDocumento() {
+      if (!this.busquedaDocumento) return;
 
       try {
-        const response = await userService.getUserId(this.busquedaId);
-        this.usuarios = [response.data]; // muestra solo el usuario encontrado
+        const response = await userService.buscarDocumento(this.busquedaDocumento);
+        this.usuarios = [response.data];
       } catch (error) {
-        console.error('Usuario no encontrado');
-        this.usuarios = []; // limpia tabla si no encuentra
+        console.error('Usuario no encontrado o error:', error);
+        this.usuarios = [];
       }
+    },
+    
+    cerrarSesion() {
+    localStorage.removeItem('token'); // Elimina el token
+    this.$router.push('/'); // Redirige al login o inicio
     }
   },
   mounted() {
     this.cargarUsuarios();
   },
   watch: {
-    busquedaId(newValue) {
+    busquedaDocumento(newValue) {
       if (newValue) {
-        this.buscarPorId();
+        this.buscarPorDocumento(); // Llama a la función de búsqueda si hay un valor
       } else {
-        this.cargarUsuarios(); // recarga todos los usuarios si no hay búsqueda
+        this.cargarUsuarios(); // Recarga todos los usuarios si no hay búsqueda
       }
     }
   }
-
 };
 </script>
