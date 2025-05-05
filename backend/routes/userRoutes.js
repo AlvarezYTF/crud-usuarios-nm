@@ -23,7 +23,6 @@ router.put('/users/:id', userController.updateUser);
 router.delete('/users/:id', userController.deleteUser);
 router.put('/users/:id/password', userController.updatePassword);
 router.get('/perfil', auth, userController.getPerfil);
-
 router.post('/login', loginController.login);
 
 module.exports = router;

@@ -129,3 +129,32 @@ exports.getPerfil = async (req, res) => {
     res.status(500).json({ error: 'Error del servidor' });
   }
 };
+const fs = require('fs');
+const path = require('path');
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  try {
+    if (req.files && req.files.imagen) {
+      const file = req.files.imagen;
+      const filename = Date.now() + path.extname(file.name);
+      const uploadPath = path.join(__dirname, '..', 'uploads', filename);
+
+      await file.mv(uploadPath);
+
+      updateData.imagen = filename;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error actualizando usuario con imagen:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
