@@ -16,14 +16,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Routes de crud
 router.get('/users', auth, userController.getUsers);
-router.get('/users/:id', auth, userController.getUserId);
 router.post('/users', upload.single('imagen'), userController.createUser);
-router.put('/users/:id', userController.updateUser);
-router.delete('/users/:id', userController.deleteUser);
+router.put('/users/:id', auth, userController.updateUser);
+router.delete('/users/:id', auth, userController.deleteUser);
+
+// routes de usuario 
+router.get('/users/:id', auth, userController.getUserId);
 router.put('/users/:id/password', userController.updatePassword);
 router.get('/perfil', auth, userController.getPerfil);
 
+//route login
 router.post('/login', loginController.login);
 
 module.exports = router;

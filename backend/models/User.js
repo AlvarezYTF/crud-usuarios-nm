@@ -77,6 +77,11 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  rol: {
+    type: String,
+    enum: ['admin', 'usuario'],
+    default: 'usuario'
+  },
   loginAttempts: {
     type: Number,
     default: 0,
