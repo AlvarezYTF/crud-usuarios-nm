@@ -36,5 +36,13 @@ export default {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     });
-  }
+  },
+
+  eliminarUsuario(id) {
+    return axios.delete(`${BASE_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  },
 };

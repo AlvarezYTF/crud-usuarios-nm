@@ -31,12 +31,12 @@
             <td>{{ usuario.direccion }}</td>
             <td>
               <router-link :to="{ name: 'VerUsuario', params: { id: usuario._id } }"
-                class="btn btn-primary">Ver</router-link>
+                class="btn btn-sm btn-primary me-2">Ver</router-link>
               <button class="btn btn-sm btn-warning me-2">
                 <i class="bi bi-pencil"></i> Actualizar
               </button>
-              <button class="btn btn-sm btn-danger">
-                <i class="bi bi-trash"></i> Eliminar
+              <button class="btn btn-danger btn-sm" @click="eliminarUsuario(usuario._id)">
+                Eliminar
               </button>
             </td>
           </tr>
@@ -56,7 +56,7 @@ import userService from '../services/userService';
 export default {
   name: 'AdminDashboard',
   data() {
-    return {  
+    return {
       usuarios: [],
       busquedaId: null // ID del usuario a buscar
     };
@@ -79,6 +79,20 @@ export default {
       } catch (error) {
         console.error('Usuario no encontrado');
         this.usuarios = []; // limpia tabla si no encuentra
+      }
+    },
+    async eliminarUsuario(id) {
+      const confirmacion = window.confirm('¿Estás seguro de eliminar este usuario?');
+
+      if (!confirmacion) return;
+
+      try {
+        await userService.eliminarUsuario(id);
+        this.usuarios = this.usuarios.filter(usuario => usuario._id !== id);
+        alert('Usuario eliminado exitosamente');
+      } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        alert('No se pudo eliminar el usuario');
       }
     }
   },
