@@ -144,6 +144,7 @@ exports.getPerfil = async (req, res) => {
     res.status(500).json({ error: 'Error del servidor' });
   }
 };
+
 exports.updateImage = async (req, res) => {
   try {
     const userId = req.params.id;

@@ -39,7 +39,7 @@ const routes = [
     component: EditarUsuario
   },
   {
-    path: '/actualizar-imagen/:id',
+    path: '/actualizar-imagen',
     name: 'ActualizarImagen',
     component: ActualizarImagen
   }

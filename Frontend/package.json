@@ -11,6 +11,7 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.5",
     "core-js": "^3.8.3",
+    "hasown": "^2.0.2",
     "just-validate": "^4.3.0",
     "sweetalert2": "^11.21.0",
     "vue": "^3.2.13",
