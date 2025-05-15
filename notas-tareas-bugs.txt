@@ -1,1 +1,5 @@
--Solucionar el registro de usuario no sea duplicado algunos campos
+- arreglar la barra de navegacion para el admin
+- no mostrar el admin en la lista de usuarios del dashboard del admin
+- aplicar los cambios de mario
+- aplicar el sweet alert
+- configurar el logout del admin

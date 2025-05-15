@@ -83,7 +83,7 @@
 
       
       <div class="row g-3 mb-3 text-start d-flex justify-content-center">
-        <button class="btn btn-danger w-40 mt-4 col-4" @click="$router.push('/')">Salir</button>
+        <button class="btn btn-danger w-40 mt-4 col-4" @click="logout">Salir</button>
         <router-link :to="{ name: 'EditarUsuario', params: { id: usuario._id } }"
         class="btn btn-success w-40 mt-4 ms-3 col-4">Actulizar datos</router-link>
       </div>
@@ -127,6 +127,10 @@ export default {
         month: 'long',
         day: 'numeric'
       });
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/');
     }
   },
   mounted() {

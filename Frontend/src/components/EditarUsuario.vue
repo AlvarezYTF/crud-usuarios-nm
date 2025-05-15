@@ -293,6 +293,13 @@ export default {
     async actualizarUsuario() {
       const formData = new FormData();
 
+      // Agregar todos los datos del usuario a formData
+      Object.entries(this.usuario).forEach(([key, value]) => {
+        if (key !== '_id' && key !== 'imagen') {
+          formData.append(key, value);
+        }
+      });
+
       // Agregar la imagen si se ha seleccionado una
       if (this.selectedFile) {
         formData.append("imagen", this.selectedFile);
