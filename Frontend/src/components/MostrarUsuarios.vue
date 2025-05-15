@@ -12,10 +12,6 @@
         Cerrar sesión
       </button>
 
-      <div class="d-flex justify-content-end">
-        <img src="" alt="Imagen de perfil" class="rounded-circle shadow" />
-      </div>
-
       <div class="mb-4 d-flex justify-content-center">
         <input
           v-model="busquedaDocumento"

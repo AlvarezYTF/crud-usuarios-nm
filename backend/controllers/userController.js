@@ -29,12 +29,20 @@ exports.getUserId = async (req, res) => {
 
 exports.buscarDocumento = async (req, res) => {
   try {
-    const documento = req.params.documento;
-    const usuario = await User.findOne({ numeroDocumento: documento });
-    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-    res.json(usuario);
+    const { documento } = req.params;
+    
+    // Buscar usuarios que contengan el documento parcial
+    const usuarios = await User.find({ 
+      numeroDocumento: { $regex: documento, $options: 'i' } 
+    });
+
+    if (usuarios.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron usuarios' });
+    }
+
+    res.json(usuarios);
   } catch (error) {
-    res.status(500).json({ error: 'Error al buscar por documento' });
+    res.status(500).json({ message: 'Error al buscar usuarios', error: error.message });
   }
 };
 

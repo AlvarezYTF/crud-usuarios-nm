@@ -20,7 +20,11 @@ export default {
   },
 
   buscarDocumento(documento) {
-    return axios.get(`${BASE_URL}/users/documento/${documento}`);
+    return axios.get(`${BASE_URL}/users/documento/${documento}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
   },
 
   registrarUsuario(usuario) {

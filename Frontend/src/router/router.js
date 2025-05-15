@@ -25,7 +25,15 @@ const routes = [
   {
     path: '/usuarios',
     name: 'MostrarUsuarios',
-    component: MostrarUsuarios
+    component: MostrarUsuarios,
+    beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        next();
+      } else {
+        next('/');
+      }
+    }
   },
   {
     path: '/perfil',
@@ -37,6 +45,8 @@ const routes = [
     name: 'EditarUsuario',
     component: EditarUsuario
   },
+
+  {}
 ]
 
 const router = createRouter({
