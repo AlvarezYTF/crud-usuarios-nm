@@ -19,7 +19,7 @@ const upload = multer({ storage });
 // Routes de crud
 router.get('/users', auth, userController.getUsers);
 router.post('/users', upload.single('imagen'), userController.createUser);
-router.put('/users/:id', auth, userController.updateUser);
+router.put('/users/:id', upload.single('imagen'), auth, userController.updateUser);
 router.delete('/users/:id', auth, userController.deleteUser);
 
 // routes de usuario 
@@ -29,6 +29,5 @@ router.get('/perfil', auth, userController.getPerfil);
 
 //route login
 router.post('/login', loginController.login);
-router.put('/users/:id/image', upload.single('imagen'), userController.updateImage);
 
 module.exports = router;

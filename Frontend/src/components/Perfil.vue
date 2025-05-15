@@ -81,7 +81,12 @@
         </div>
       </div>
 
-      <button class="btn btn-secondary w-100 mt-4" @click="$router.push('/')">Volver</button>
+      
+      <div class="row g-3 mb-3 text-start d-flex justify-content-center">
+        <button class="btn btn-danger w-40 mt-4 col-4" @click="$router.push('/')">Salir</button>
+        <router-link :to="{ name: 'EditarUsuario', params: { id: usuario._id } }"
+        class="btn btn-success w-40 mt-4 ms-3 col-4">Actulizar datos</router-link>
+      </div>
     </div>
 
     <div v-else class="text-center mt-5">
