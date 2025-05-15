@@ -18,6 +18,8 @@ const upload = multer({ storage });
 
 // Routes de crud
 router.get('/users', auth, userController.getUsers);
+router.get('/users/:id', userController.getUserId);
+router.get('/users/documento/:documento', userController.buscarDocumento);
 router.post('/users', upload.single('imagen'), userController.createUser);
 router.put('/users/:id', upload.single('imagen'), auth, userController.updateUser);
 router.delete('/users/:id', auth, userController.deleteUser);
