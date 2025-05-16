@@ -5,9 +5,11 @@
         Dashboard de Administrador
       </h4>
 
-      <button @click="cerrarSesion"
-          class="btn btn-outline-danger btn-sm position-absolute start-40 top-10 translate-middle-y">
-          Cerrar sesión
+      <button
+        @click="cerrarSesion"
+        class="btn btn-outline-danger btn-sm position-absolute start-40 top-10 translate-middle-y"
+      >
+        Cerrar sesión
       </button>
 
       <div class="mb-4 d-flex justify-content-center">
@@ -85,14 +87,25 @@ export default {
   data() {
     return {
       usuarios: [],
-      busquedaDocumento: null, // ID del usuario a buscar
+      busquedaDocumento: null,
+      usuarioActualId: null,
     };
   },
   methods: {
     async cargarUsuarios() {
       try {
+        // Obtener el ID del usuario actual del token
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          this.usuarioActualId = decodedToken.id;
+        }
+
         const response = await userService.MostrarUsuarios();
-        this.usuarios = response.data;
+        // Filtrar usuarios para excluir el usuario actual
+        this.usuarios = response.data.filter(
+          (usuario) => usuario._id !== this.usuarioActualId
+        );
       } catch (error) {
         console.error("Error al cargar los usuarios:", error);
       }
