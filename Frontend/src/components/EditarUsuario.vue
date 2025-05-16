@@ -132,6 +132,8 @@
               type="text"
               class="form-control"
               placeholder="Teléfono..."
+              maxlength="10"
+              pattern="[0-9]*"
             />
           </div>
           <div class="col-md-6">
@@ -194,7 +196,7 @@
 
 <script>
 import userService from "@/services/userService";
-
+import Swal from "sweetalert2";
 export default {
   name: "UserEditForm",
   props: {
@@ -264,63 +266,116 @@ export default {
       if (this.selectedFile) {
         formData.append("imagen", this.selectedFile);
       }
-
-      try {
-      const id = this.$route.params.id;
-      const response = await userService.actualizarUsuario(id, formData); // Asegúrate de que este método esté implementado en userService
-
-      console.log(response);
-
-      if (response.status === 200) {
-        alert("Imagen actualizada correctamente");
-        // Verifica la estructura de la respuesta antes de acceder a 'imagen'
-        if (response.data && response.data.imagen) {
-          this.usuario.imagen = response.data.imagen; // Asegúrate de que esto sea correcto
-        } else {
-          console.error(
-            "La respuesta no contiene la imagen esperada:",
-            response.data
-          );
-          alert("Error: La imagen no fue actualizada correctamente.");
-        }
-        this.cerrarModal(); // Cierra el modal después de actualizar la imagen
-      }
-      } catch (error) {
-        console.error("Error al actualizar la imagen:", error);
-        alert("Error al enviar la solicitud");
-      }
-    },
-    async actualizarUsuario() {
-      const formData = new FormData();
-
-      // Agregar todos los datos del usuario a formData
-      Object.entries(this.usuario).forEach(([key, value]) => {
-        if (key !== '_id' && key !== 'imagen') {
-          formData.append(key, value);
-        }
-      });
-
-      // Agregar la imagen si se ha seleccionado una
-      if (this.selectedFile) {
-        formData.append("imagen", this.selectedFile);
-      }
-
+    
       try {
         const id = this.$route.params.id;
         const response = await userService.actualizarUsuario(id, formData);
-
+    
+        console.log(response);
+    
         if (response.status === 200) {
-          alert("Usuario actualizado correctamente");
-          this.$router.go(-1);
-        } else {
-          alert("Error al actualizar usuario");
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'Imagen actualizada correctamente',
+            confirmButtonColor: '#2c3e50',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            // Verifica la estructura de la respuesta antes de acceder a 'imagen'
+            if (response.data && response.data.imagen) {
+              this.usuario.imagen = response.data.imagen;
+              this.cerrarModal(); // Cierra el modal después de actualizar la imagen
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'La imagen no fue actualizada correctamente',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+          });
         }
       } catch (error) {
-        console.error("Error al actualizar usuario:", error);
-        alert("Error al enviar la solicitud");
+        console.error("Error al actualizar la imagen:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al enviar la solicitud',
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar'
+        });
       }
     },
-  },
+  async actualizarUsuario() {
+    const formData = new FormData();
+  
+    // Agregar todos los datos del usuario a formData
+    Object.entries(this.usuario).forEach(([key, value]) => {
+      if (key !== '_id' && key !== 'imagen') {
+        formData.append(key, value);
+      }
+    });
+  
+    // Agregar la imagen si se ha seleccionado una
+    if (this.selectedFile) {
+      formData.append("imagen", this.selectedFile);
+    }
+  
+    try {
+      // Validar edad
+      if (this.usuario.fechaNacimiento) {
+        const fechaNacimiento = new Date(this.usuario.fechaNacimiento);
+        const hoy = new Date();
+        const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+        const cumpleEsteAno = new Date(hoy.getFullYear(), fechaNacimiento.getMonth(), fechaNacimiento.getDate());
+        const edadFinal = hoy < cumpleEsteAno ? edad - 1 : edad;
+        
+        if (edadFinal < 14) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'La edad mínima permitida es 14 años',
+            confirmButtonColor: '#d33'
+          });
+          return;
+        }
+      }
+  
+      const id = this.$route.params.id;
+      const response = await userService.actualizarUsuario(id, formData);
+  
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Usuario actualizado correctamente',
+          confirmButtonColor: '#2c3e50',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          this.$router.go(-1);
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al actualizar usuario',
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    } catch (error) {
+      console.error("Error al actualizar usuario:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Debes completar todos los campos',
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  }
+},
   mounted() {
     this.cargarUsuario();
   },

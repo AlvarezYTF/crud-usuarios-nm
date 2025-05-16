@@ -43,8 +43,15 @@
 
           <div class="row g-3 mb-3">
             <div class="col">
-              <input type="tel" id="telefono" class="form-control" placeholder="Teléfono"
-                v-model="formulario.telefono" />
+              <input 
+                type="tel" 
+                id="telefono" 
+                class="form-control" 
+                placeholder="Teléfono"
+                v-model="formulario.telefono"
+                maxlength="10"
+                pattern="[0-9]*"
+              />
             </div>
             <div class="col">
               <input type="text" id="direccion" class="form-control" placeholder="Dirección"
@@ -54,7 +61,13 @@
 
           <div class="row g-3 mb-3">
             <div class="col">
-              <input type="date" id="fechaNacimiento" class="form-control" v-model="formulario.fechaNacimiento" />
+              <input 
+                type="date" 
+                id="fechaNacimiento" 
+                class="form-control" 
+                v-model="formulario.fechaNacimiento"
+                :max="fechaMaxima"
+              />
             </div>
             <div class="col">
               <input type="text" id="ciudad" class="form-control" placeholder="Ciudad de residencia"
@@ -166,6 +179,14 @@ export default {
       }
     };
   },
+  computed: {
+    fechaMaxima() {
+      const hoy = new Date();
+      const fechaMax = new Date();
+      fechaMax.setFullYear(hoy.getFullYear() - 14);
+      return fechaMax.toISOString().split('T')[0];
+    }
+  },
   methods: {
     handleFileUpload(event) {
       this.archivoImagen = event.target.files[0];
@@ -267,6 +288,26 @@ export default {
         });
       }
     },
+    validarEdad() {
+    if (this.formulario.fechaNacimiento) {
+      const fechaNacimiento = new Date(this.formulario.fechaNacimiento);
+      const hoy = new Date();
+      const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+      const cumpleEsteAno = new Date(hoy.getFullYear(), fechaNacimiento.getMonth(), fechaNacimiento.getDate());
+      const edadFinal = hoy < cumpleEsteAno ? edad - 1 : edad;
+      
+      if (edadFinal < 14) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La edad mínima permitida es 14 años',
+          confirmButtonColor: '#d33'
+        });
+        return false;
+      }
+    }
+    return true;
+  },
     resetFormulario() {
       this.formulario = {
         tipoDocumento: '',
@@ -313,7 +354,8 @@ export default {
         { rule: 'required', errorMessage: 'La nacionalidad es obligatorio' }
       ])
       .addField('#telefono', [
-        { rule: 'required', errorMessage: 'El teléfono es obligatorio' }
+        { rule: 'required', errorMessage: 'El teléfono es obligatorio' },
+        { rule: 'customRegexp', value: /^[0-9]{10}$/, errorMessage: 'El teléfono debe tener exactamente 10 dígitos' }
       ])
       .addField('#fechaNacimiento', [
         {
@@ -350,7 +392,7 @@ export default {
             ])
             .addField('#contrasena', [
               { rule: 'required', errorMessage: 'Contraseña requerida' },
-              { rule: 'minLength', value: 6, errorMessage: 'Mínimo 6 caracteres' }
+              { rule: 'minLength', value: 8, errorMessage: 'Mínimo 8 caracteres' }
             ])
             .addField('#confirmarContrasena', [
               {

@@ -38,8 +38,8 @@
 
             <div class="row g-3 mb-3">
                 <div class="col">
-                    <label class="form-label">Teléfono</label>
-                    <input type="text" class="form-control" :value="usuario.telefono" disabled />
+                  <label class="form-label">Teléfono</label>
+                  <input type="text" class="form-control" :value="usuario.telefono" disabled maxlength="10" />
                 </div>
                 <div class="col">
                     <label class="form-label">Dirección</label>
@@ -84,6 +84,7 @@
 
 <script>
 import userService from '../services/userService';
+import Swal from 'sweetalert2';
 
 export default {
     name: 'VerUsuario',
@@ -97,9 +98,29 @@ export default {
             try {
                 const id = this.$route.params.id;
                 const response = await userService.getUserId(id);
+                
+                // Validar que el teléfono tenga exactamente 10 caracteres
+                if (response.data.telefono && response.data.telefono.length !== 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'El número de teléfono debe tener exactamente 10 dígitos',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    return;
+                }
+
                 this.usuario = response.data;
             } catch (error) {
                 console.error('Error al obtener usuario:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo cargar la información del usuario',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar'
+                });
             }
         },
         formatFecha(fecha) {

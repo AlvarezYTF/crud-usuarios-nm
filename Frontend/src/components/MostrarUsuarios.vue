@@ -81,7 +81,7 @@
 
 <script>
 import userService from "../services/userService";
-
+import Swal from 'sweetalert2';
 export default {
   name: "AdminDashboard",
   data() {
@@ -132,19 +132,47 @@ export default {
       }
     },
     async eliminarUsuario(id) {
-      const confirmacion = window.confirm(
-        "¿Estás seguro de eliminar este usuario?"
-      );
-
-      if (!confirmacion) return;
-
       try {
-        await userService.eliminarUsuario(id);
-        this.usuarios = this.usuarios.filter((usuario) => usuario._id !== id);
-        alert("Usuario eliminado exitosamente");
+        // Mostrar confirmación con SweetAlert2
+        const result = await Swal.fire({
+          icon: 'warning',
+          title: '¿Estás seguro?',
+          text: 'Esta acción no se puede deshacer',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d'
+        });
+    
+        if (!result.isConfirmed) return;
+    
+        // Proceder con la eliminación
+        const response = await userService.eliminarUsuario(id);
+    
+        if (response.status === 200) {
+          // Actualizar la lista de usuarios
+          this.usuarios = this.usuarios.filter((usuario) => usuario._id !== id);
+          
+          // Mostrar mensaje de éxito
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'Usuario eliminado exitosamente',
+            confirmButtonColor: '#2c3e50'
+          });
+        } else {
+          throw new Error('Error al eliminar usuario');
+        }
       } catch (error) {
-        console.error("Error al eliminar usuario:", error);
-        alert("No se pudo eliminar el usuario");
+        console.error('Error al eliminar usuario:', error);
+        // Mostrar mensaje de error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el usuario',
+          confirmButtonColor: '#d33'
+        });
       }
     },
     cerrarSesion() {
