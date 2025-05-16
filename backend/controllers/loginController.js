@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
     // 1. Buscar el usuario por correo
     const user = await User.findOne({ correo }).select('+contrasena +loginAttempts +lockUntil');
     if (!user) {
-      return res.status(400).json({ error: 'Usuario no encontrado' });
+      return res.status(400).json({ error: 'Correo o contrseña incorrectos' });
     }
 
     // 2. Verificar si la cuenta está bloqueada
@@ -32,7 +32,7 @@ exports.login = async (req, res) => {
       }
 
       await user.save();
-      return res.status(401).json({ error: 'Contraseña incorrecta' });
+      return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
     }
 
     // 4. Restablecer intentos fallidos si el inicio de sesión es exitoso
