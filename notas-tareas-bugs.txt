@@ -1,1 +1,2 @@
-- aplicar el sweet alert
+- Arreglar la barra de busqueda
+- mostrar una imagen predeterminada al usuario
